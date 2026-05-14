@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>大根・たくあん漬け 塩の量計算｜ぬか漬け・たくあん対応</title>
+  <meta name="description" content="大根のぬか漬け・たくあん漬けに必要な塩の量を計算。大根の重さを入力するだけで塩分量が出ます。">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif; background: #f3efe8; color: #2c2c2c; font-size: 16px; line-height: 1.6; }
+    header { background: linear-gradient(160deg, #1e3d0a 0%, #2d5c12 50%, #3d7a1a 100%); color: white; padding: 20px 16px 18px; position: relative; overflow: hidden; }
+    header::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 20% 50%, rgba(120,200,60,0.15) 0%, transparent 60%); }
+    .header-inner { max-width: 640px; margin: 0 auto; position: relative; z-index: 1; }
+    .back-link { display: inline-flex; align-items: center; gap: 4px; color: rgba(255,255,255,0.75); font-size: 0.8rem; text-decoration: none; margin-bottom: 10px; }
+    header h1 { font-size: 1.25rem; font-weight: bold; }
+    header p { font-size: 0.8rem; opacity: 0.78; margin-top: 5px; }
+    .ad-slot { background: #e8e2d8; border: 1px dashed #b8a888; text-align: center; padding: 12px; margin: 0 auto; max-width: 640px; color: #907050; font-size: 0.8rem; min-height: 90px; display: flex; align-items: center; justify-content: center; }
+    .container { max-width: 640px; margin: 0 auto; padding: 20px 16px 48px; }
+    .tab-group { display: flex; gap: 8px; margin-bottom: 18px; }
+    .tab-btn { flex: 1; padding: 10px 8px; background: white; border: 2px solid #d8d0c0; border-radius: 10px; font-size: 0.82rem; font-weight: bold; color: #888; cursor: pointer; transition: all 0.18s; }
+    .tab-btn.active { background: linear-gradient(135deg, #2d5c12, #4a8020); color: white; border-color: transparent; box-shadow: 0 3px 10px rgba(45,92,18,0.3); }
+    .card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+    .card-title { font-size: 0.88rem; font-weight: bold; color: #1e3d0a; margin-bottom: 14px; }
+    .input-label { font-size: 0.82rem; color: #666; margin-bottom: 6px; display: block; }
+    .input-row { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+    .input-field { flex: 1; height: 52px; border: 2px solid #e0d8c8; border-radius: 12px; padding: 0 16px; font-size: 1.2rem; font-weight: bold; background: #fafaf7; outline: none; transition: border-color 0.2s; -webkit-appearance: none; }
+    .input-field:focus { border-color: #4a8020; background: white; }
+    .input-unit { font-size: 0.9rem; color: #666; }
+    .preset-label { font-size: 0.78rem; color: #888; margin-bottom: 7px; }
+    .preset-row { display: flex; gap: 7px; flex-wrap: wrap; }
+    .preset-btn { padding: 7px 14px; background: #f0ece4; border: 1px solid #d8d0c0; border-radius: 20px; font-size: 0.82rem; color: #555; cursor: pointer; }
+    .preset-btn.selected { background: linear-gradient(135deg, #2d5c12, #4a8020); color: white; border-color: transparent; }
+    .slider-row { display: flex; align-items: center; gap: 10px; }
+    .slider { flex: 1; -webkit-appearance: none; height: 6px; background: #e0d8c8; border-radius: 3px; outline: none; }
+    .slider::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; background: linear-gradient(135deg, #2d5c12, #4a8020); border-radius: 50%; cursor: pointer; }
+    .slider-value { font-size: 1.1rem; font-weight: bold; color: #2d5c12; min-width: 44px; text-align: right; }
+    .slider-hint { font-size: 0.75rem; color: #aaa; margin-top: 4px; }
+    .calc-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #2d5c12, #4a8020); color: white; border: none; border-radius: 14px; font-size: 1rem; font-weight: bold; cursor: pointer; box-shadow: 0 4px 14px rgba(45,92,18,0.3); transition: transform 0.15s; }
+    .calc-btn:active { transform: scale(0.97); }
+    .result-card { background: linear-gradient(135deg, #f0f7e8, #e8f3d8); border: 2px solid #b8d890; border-radius: 16px; padding: 22px 20px; margin-top: 16px; display: none; }
+    .result-card.show { display: block; }
+    .result-title { font-size: 0.85rem; color: #2d5c12; font-weight: bold; margin-bottom: 16px; }
+    .result-main { display: flex; align-items: baseline; gap: 6px; margin-bottom: 4px; }
+    .result-num { font-size: 2.6rem; font-weight: bold; color: #1e3d0a; line-height: 1; }
+    .result-unit { font-size: 1rem; color: #4a8020; font-weight: bold; }
+    .result-label { font-size: 0.8rem; color: #5a7a30; margin-bottom: 16px; }
+    .result-row { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid rgba(100,150,50,0.2); font-size: 0.85rem; }
+    .result-row:last-child { border-bottom: none; }
+    .result-row-label { color: #555; }
+    .result-row-val { font-weight: bold; color: #2d5c12; }
+    .sub-result { background: rgba(255,255,255,0.6); border-radius: 10px; padding: 12px; margin-top: 14px; }
+    .sub-result-title { font-size: 0.78rem; color: #5a7a30; font-weight: bold; margin-bottom: 8px; }
+    .info-card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .info-title { font-size: 0.9rem; font-weight: bold; color: #1e3d0a; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid #e8e0d0; }
+    .info-item { margin-bottom: 14px; }
+    .info-q { font-size: 0.83rem; font-weight: bold; color: #2d5c12; margin-bottom: 4px; }
+    .info-a { font-size: 0.82rem; color: #555; line-height: 1.7; }
+    .tip-list { list-style: none; margin-top: 14px; }
+    .tip-list li { font-size: 0.83rem; color: #555; line-height: 1.8; padding-left: 1.4em; position: relative; }
+    .tip-list li::before { content: '🥕'; position: absolute; left: 0; font-size: 0.72rem; top: 0.2em; }
+    footer { background: linear-gradient(135deg, #1e3d0a, #2d5c12); color: #8aba5c; text-align: center; padding: 20px; font-size: 0.75rem; }
+    footer a { color: #8aba5c; text-decoration: none; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a href="../index.html" class="back-link">← 保存食計算ツール TOP</a>
+    <h1>🥕 大根・たくあん 塩の量計算</h1>
+    <p>ぬか漬け・たくあん漬けの塩分量を計算</p>
+  </div>
+</header>
+<div class="ad-slot">広告</div>
+<div class="container">
+  <div class="tab-group">
+    <button class="tab-btn active" onclick="switchMode('nuka')">ぬか漬け</button>
+    <button class="tab-btn" onclick="switchMode('takuan')">たくあん漬け</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚖️ 大根の重さを入力</div>
+    <label class="input-label" id="weightLabel">大根の重さ（皮・葉を除いた後）</label>
+    <div class="input-row">
+      <input type="number" class="input-field" id="weight" placeholder="例：1500" inputmode="numeric">
+      <span class="input-unit">g</span>
+    </div>
+    <div class="preset-label">よく使う量</div>
+    <div class="preset-row">
+      <button class="preset-btn" onclick="setWeight(500)">500g</button>
+      <button class="preset-btn" onclick="setWeight(1000)">1kg</button>
+      <button class="preset-btn" onclick="setWeight(2000)">2kg</button>
+      <button class="preset-btn" onclick="setWeight(3000)">3kg</button>
+    </div>
+  </div>
+
+  <div class="card" id="nukaCard">
+    <div class="card-title">🎚️ 塩分濃度（ぬか床の塩分）</div>
+    <div class="slider-row">
+      <input type="range" class="slider" id="saltPct" min="1" max="8" step="0.5" value="3.5" oninput="updateSlider()">
+      <span class="slider-value" id="saltPctVal">3.5%</span>
+    </div>
+    <div class="slider-hint">ぬか床の塩分目安：3〜5%（大根の重量比）</div>
+  </div>
+
+  <div class="card" id="takuanCard" style="display:none;">
+    <div class="card-title">🎚️ たくあん塩分設定</div>
+    <div class="slider-row">
+      <input type="range" class="slider" id="takuanPct" min="3" max="10" step="0.5" value="6" oninput="updateTakuanSlider()">
+      <span class="slider-value" id="takuanPctVal">6%</span>
+    </div>
+    <div class="slider-hint">たくあんの塩分目安：5〜8%（干し大根の重量比）</div>
+    <div style="margin-top:14px; font-size:0.8rem; color:#888; line-height:1.7;">
+      ※ たくあんは大根を天日干し（3〜7日）してから漬けます。干し上がり後の重さを入力してください。
+    </div>
+  </div>
+
+  <button class="calc-btn" onclick="calculate()">計算する</button>
+
+  <div class="result-card" id="result">
+    <div class="result-title">✅ 計算結果</div>
+    <div class="result-main">
+      <span class="result-num" id="saltAmount">—</span>
+      <span class="result-unit">g</span>
+    </div>
+    <div class="result-label">塩の量（<span id="pctLabel"></span>）</div>
+    <div>
+      <div class="result-row"><span class="result-row-label">大根の重さ</span><span class="result-row-val" id="r-weight">—</span></div>
+      <div class="result-row"><span class="result-row-label">塩分濃度</span><span class="result-row-val" id="r-pct">—</span></div>
+      <div class="result-row"><span class="result-row-label">重石の目安</span><span class="result-row-val" id="r-omoshi">—</span></div>
+    </div>
+    <div class="sub-result" id="takuanExtra" style="display:none;">
+      <div class="sub-result-title">たくあん漬けの場合の追加材料（目安）</div>
+      <div class="result-row"><span class="result-row-label">ぬか</span><span class="result-row-val" id="r-nuka">—</span></div>
+      <div class="result-row"><span class="result-row-label">砂糖（甘さ調整）</span><span class="result-row-val" id="r-sugar">—</span></div>
+      <div class="result-row"><span class="result-row-label">唐辛子</span><span class="result-row-val" id="r-togarashi">2〜3本</span></div>
+    </div>
+  </div>
+
+  <div class="info-card" style="margin-top:16px;">
+    <div class="info-title">📖 大根漬けのポイント</div>
+    <div class="info-item">
+      <div class="info-q">Q. ぬか漬けは塩以外に何が要る？</div>
+      <div class="info-a">米ぬか（大根重量の10〜15%）、昆布、唐辛子があると旨みが増します。ぬか床は毎日かき混ぜて発酵を管理します。</div>
+    </div>
+    <div class="info-item">
+      <div class="info-q">Q. たくあんは干してから漬けるの？</div>
+      <div class="info-a">はい。大根を3〜7日天日干しして水分を抜いてから漬けます。干し上がった後の重さで計算してください。干す前と比べて重さが2/3〜半分になります。</div>
+    </div>
+    <ul class="tip-list">
+      <li>ぬか漬けは常温2〜3日、冷蔵庫で3〜5日が食べ頃</li>
+      <li>たくあんは本漬け後、冷暗所で2〜3ヶ月で食べ頃</li>
+      <li>重石は最初は大根の2倍、水が上がったら同量に</li>
+      <li>塩は粗塩を使うと旨みが出やすい</li>
+    </ul>
+  </div>
+</div>
+<div style="max-width:640px; margin:0 auto; padding:0 16px 8px;">
+  <div class="ad-slot" style="min-height:250px;">広告</div>
+</div>
+<footer>
+  <p>保存食計算ツール | <a href="../privacy.html">プライバシーポリシー</a></p>
+</footer>
+<script>
+  let mode = 'nuka';
+  function switchMode(m) {
+    mode = m;
+    document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+      btn.classList.toggle('active', (i === 0 && m === 'nuka') || (i === 1 && m === 'takuan'));
+    });
+    document.getElementById('nukaCard').style.display = m === 'nuka' ? '' : 'none';
+    document.getElementById('takuanCard').style.display = m === 'takuan' ? '' : 'none';
+    document.getElementById('result').classList.remove('show');
+  }
+  function updateSlider() { document.getElementById('saltPctVal').textContent = document.getElementById('saltPct').value + '%'; }
+  function updateTakuanSlider() { document.getElementById('takuanPctVal').textContent = document.getElementById('takuanPct').value + '%'; }
+  function setWeight(g) { document.getElementById('weight').value = g; document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('selected')); event.target.classList.add('selected'); }
+  function calculate() {
+    const w = parseFloat(document.getElementById('weight').value);
+    if (!w || w <= 0) { alert('重さを入力してください'); return; }
+    let pct, salt;
+    if (mode === 'nuka') {
+      pct = parseFloat(document.getElementById('saltPct').value);
+      salt = Math.round(w * pct / 100);
+      document.getElementById('takuanExtra').style.display = 'none';
+    } else {
+      pct = parseFloat(document.getElementById('takuanPct').value);
+      salt = Math.round(w * pct / 100);
+      document.getElementById('takuanExtra').style.display = '';
+      document.getElementById('r-nuka').textContent = Math.round(w * 0.12).toLocaleString() + 'g（大根の12%目安）';
+      document.getElementById('r-sugar').textContent = Math.round(w * 0.03).toLocaleString() + 'g（大根の3%目安）';
+    }
+    document.getElementById('saltAmount').textContent = salt.toLocaleString();
+    document.getElementById('pctLabel').textContent = pct + '%';
+    document.getElementById('r-weight').textContent = w.toLocaleString() + ' g';
+    document.getElementById('r-pct').textContent = pct + '%';
+    document.getElementById('r-omoshi').textContent = '最初 ' + Math.round(w*2).toLocaleString() + 'g → 水上がり後 ' + Math.round(w).toLocaleString() + 'g';
+    const rc = document.getElementById('result');
+    rc.classList.add('show');
+    rc.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  document.getElementById('weight').addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); });
+</script>
+</body>
+</html>

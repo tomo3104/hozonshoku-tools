@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>白菜漬け 塩の量計算｜浅漬け・本漬け対応</title>
+  <meta name="description" content="白菜漬けに必要な塩の量を自動計算。浅漬け（2〜3%）・本漬け（3〜4%）に対応。白菜の重さを入力するだけで塩と重石の量が出ます。">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif; background: #f3efe8; color: #2c2c2c; font-size: 16px; line-height: 1.6; min-height: 100vh; }
+    header { background: linear-gradient(160deg, #1e3d0a 0%, #2d5c12 50%, #3d7a1a 100%); color: white; padding: 20px 16px 18px; position: relative; overflow: hidden; }
+    header::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 20% 50%, rgba(120,200,60,0.15) 0%, transparent 60%); }
+    .header-inner { max-width: 640px; margin: 0 auto; position: relative; z-index: 1; }
+    .back-link { display: inline-flex; align-items: center; gap: 4px; color: rgba(255,255,255,0.75); font-size: 0.8rem; text-decoration: none; margin-bottom: 10px; }
+    header h1 { font-size: 1.25rem; font-weight: bold; letter-spacing: 0.03em; }
+    header p { font-size: 0.8rem; opacity: 0.78; margin-top: 5px; }
+    .ad-slot { background: #e8e2d8; border: 1px dashed #b8a888; text-align: center; padding: 12px; margin: 0 auto; max-width: 640px; color: #907050; font-size: 0.8rem; min-height: 90px; display: flex; align-items: center; justify-content: center; }
+    .container { max-width: 640px; margin: 0 auto; padding: 20px 16px 48px; }
+    .tab-group { display: flex; gap: 8px; margin-bottom: 18px; }
+    .tab-btn { flex: 1; padding: 10px 8px; background: white; border: 2px solid #d8d0c0; border-radius: 10px; font-size: 0.85rem; font-weight: bold; color: #888; cursor: pointer; transition: all 0.18s; }
+    .tab-btn.active { background: linear-gradient(135deg, #2d5c12, #4a8020); color: white; border-color: transparent; box-shadow: 0 3px 10px rgba(45,92,18,0.3); }
+    .card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+    .card-title { font-size: 0.88rem; font-weight: bold; color: #1e3d0a; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
+    .input-label { font-size: 0.82rem; color: #666; margin-bottom: 6px; display: block; }
+    .input-row { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+    .input-field { flex: 1; height: 52px; border: 2px solid #e0d8c8; border-radius: 12px; padding: 0 16px; font-size: 1.2rem; font-weight: bold; color: #2c2c2c; background: #fafaf7; outline: none; transition: border-color 0.2s; -webkit-appearance: none; }
+    .input-field:focus { border-color: #4a8020; background: white; }
+    .input-unit { font-size: 0.9rem; color: #666; white-space: nowrap; }
+    .preset-label { font-size: 0.78rem; color: #888; margin-bottom: 7px; }
+    .preset-row { display: flex; gap: 7px; flex-wrap: wrap; }
+    .preset-btn { padding: 7px 14px; background: #f0ece4; border: 1px solid #d8d0c0; border-radius: 20px; font-size: 0.82rem; color: #555; cursor: pointer; transition: all 0.15s; }
+    .preset-btn.selected { background: linear-gradient(135deg, #2d5c12, #4a8020); color: white; border-color: transparent; }
+    .slider-wrap { margin-bottom: 4px; }
+    .slider-row { display: flex; align-items: center; gap: 10px; }
+    .slider { flex: 1; -webkit-appearance: none; height: 6px; background: #e0d8c8; border-radius: 3px; outline: none; }
+    .slider::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; background: linear-gradient(135deg, #2d5c12, #4a8020); border-radius: 50%; cursor: pointer; box-shadow: 0 2px 6px rgba(45,92,18,0.35); }
+    .slider-value { font-size: 1.1rem; font-weight: bold; color: #2d5c12; min-width: 44px; text-align: right; }
+    .slider-hint { font-size: 0.75rem; color: #aaa; margin-top: 4px; }
+    .calc-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #2d5c12, #4a8020); color: white; border: none; border-radius: 14px; font-size: 1rem; font-weight: bold; cursor: pointer; letter-spacing: 0.05em; box-shadow: 0 4px 14px rgba(45,92,18,0.3); transition: transform 0.15s; }
+    .calc-btn:active { transform: scale(0.97); }
+    .result-card { background: linear-gradient(135deg, #f0f7e8, #e8f3d8); border: 2px solid #b8d890; border-radius: 16px; padding: 22px 20px; margin-top: 16px; display: none; }
+    .result-card.show { display: block; }
+    .result-title { font-size: 0.85rem; color: #2d5c12; font-weight: bold; margin-bottom: 16px; }
+    .result-main { display: flex; align-items: baseline; gap: 6px; margin-bottom: 4px; }
+    .result-num { font-size: 2.6rem; font-weight: bold; color: #1e3d0a; line-height: 1; }
+    .result-unit { font-size: 1rem; color: #4a8020; font-weight: bold; }
+    .result-label { font-size: 0.8rem; color: #5a7a30; margin-bottom: 16px; }
+    .result-sub .result-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid rgba(100,150,50,0.2); font-size: 0.85rem; }
+    .result-sub .result-row:last-child { border-bottom: none; }
+    .result-row-label { color: #555; }
+    .result-row-val { font-weight: bold; color: #2d5c12; }
+    .info-card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .info-title { font-size: 0.9rem; font-weight: bold; color: #1e3d0a; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid #e8e0d0; }
+    .info-item { margin-bottom: 14px; }
+    .info-q { font-size: 0.83rem; font-weight: bold; color: #2d5c12; margin-bottom: 4px; }
+    .info-a { font-size: 0.82rem; color: #555; line-height: 1.7; }
+    .tip-list { list-style: none; }
+    .tip-list li { font-size: 0.83rem; color: #555; line-height: 1.8; padding-left: 1.4em; position: relative; }
+    .tip-list li::before { content: '🥬'; position: absolute; left: 0; font-size: 0.72rem; top: 0.2em; }
+    footer { background: linear-gradient(135deg, #1e3d0a, #2d5c12); color: #8aba5c; text-align: center; padding: 20px; font-size: 0.75rem; }
+    footer a { color: #8aba5c; text-decoration: none; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a href="../index.html" class="back-link">← 保存食計算ツール TOP</a>
+    <h1>🥬 白菜漬け 塩の量計算</h1>
+    <p>浅漬け・本漬けの塩の量と重石を計算</p>
+  </div>
+</header>
+
+<div class="ad-slot">広告</div>
+
+<div class="container">
+  <div class="tab-group">
+    <button class="tab-btn active" onclick="switchMode('asa')">浅漬け</button>
+    <button class="tab-btn" onclick="switchMode('hon')">本漬け</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚖️ 白菜の重さを入力</div>
+    <label class="input-label">白菜の重さ（外葉を除いた後）</label>
+    <div class="input-row">
+      <input type="number" class="input-field" id="weight" placeholder="例：2000" min="1" inputmode="numeric">
+      <span class="input-unit">g</span>
+    </div>
+    <div class="preset-label">よく使う量</div>
+    <div class="preset-row">
+      <button class="preset-btn" onclick="setWeight(1000)">1kg</button>
+      <button class="preset-btn" onclick="setWeight(2000)">2kg</button>
+      <button class="preset-btn" onclick="setWeight(3000)">3kg</button>
+      <button class="preset-btn" onclick="setWeight(5000)">5kg</button>
+      <button class="preset-btn" onclick="setWeight(10000)">10kg</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🎚️ 塩分濃度</div>
+    <div class="slider-wrap">
+      <div class="slider-row">
+        <input type="range" class="slider" id="saltPct" min="1" max="6" step="0.5" value="2.5" oninput="updateSlider()">
+        <span class="slider-value" id="saltPctVal">2.5%</span>
+      </div>
+      <div class="slider-hint" id="sliderHint">浅漬けの目安：2〜3%　本漬けの目安：3〜4%</div>
+    </div>
+  </div>
+
+  <button class="calc-btn" onclick="calculate()">計算する</button>
+
+  <div class="result-card" id="result">
+    <div class="result-title">✅ 計算結果</div>
+    <div class="result-main">
+      <span class="result-num" id="saltAmount">—</span>
+      <span class="result-unit">g</span>
+    </div>
+    <div class="result-label">塩の量（<span id="pctLabel"></span>）</div>
+    <div class="result-sub">
+      <div class="result-row"><span class="result-row-label">白菜の重さ</span><span class="result-row-val" id="r-weight">—</span></div>
+      <div class="result-row"><span class="result-row-label">塩分濃度</span><span class="result-row-val" id="r-pct">—</span></div>
+      <div class="result-row"><span class="result-row-label">重石の目安</span><span class="result-row-val" id="r-omoshi">—</span></div>
+    </div>
+  </div>
+
+  <div class="info-card" style="margin-top:16px;">
+    <div class="info-title">📖 白菜漬けのポイント</div>
+    <div class="info-item">
+      <div class="info-q">Q. 浅漬けと本漬けの違いは？</div>
+      <div class="info-a">浅漬けは塩分2〜3%で1〜2日で食べる即席漬け。本漬けは3〜4%以上で数日〜数週間かけて熟成させる保存食です。</div>
+    </div>
+    <div class="info-item">
+      <div class="info-q">Q. 白菜はどのくらい切る？</div>
+      <div class="info-a">1/4〜1/8に縦割りにするのが一般的。芯に切れ込みを入れると塩が入りやすくなります。外葉は取り除いてから重さを量ってください。</div>
+    </div>
+    <ul class="tip-list" style="margin-top:14px;">
+      <li>白菜は洗って水気をよく切ってから量る</li>
+      <li>塩は葉の間にまんべんなくまぶす</li>
+      <li>重石は最初は白菜の2倍の重さから始める</li>
+      <li>水が上がったら重石を同量程度に減らす</li>
+      <li>昆布・唐辛子・柚子を加えると風味がよい</li>
+    </ul>
+  </div>
+</div>
+
+<div style="max-width:640px; margin:0 auto; padding:0 16px 8px;">
+  <div class="ad-slot" style="min-height:250px;">広告</div>
+</div>
+
+<footer>
+  <p>保存食計算ツール | <a href="../privacy.html">プライバシーポリシー</a></p>
+</footer>
+
+<script>
+  let mode = 'asa';
+  function switchMode(m) {
+    mode = m;
+    document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+      btn.classList.toggle('active', (i === 0 && m === 'asa') || (i === 1 && m === 'hon'));
+    });
+    const slider = document.getElementById('saltPct');
+    slider.value = m === 'asa' ? 2.5 : 3.5;
+    updateSlider();
+    document.getElementById('result').classList.remove('show');
+  }
+  function updateSlider() {
+    document.getElementById('saltPctVal').textContent = document.getElementById('saltPct').value + '%';
+  }
+  function setWeight(g) {
+    document.getElementById('weight').value = g;
+    document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('selected'));
+    event.target.classList.add('selected');
+  }
+  function calculate() {
+    const w = parseFloat(document.getElementById('weight').value);
+    const pct = parseFloat(document.getElementById('saltPct').value);
+    if (!w || w <= 0) { alert('重さを入力してください'); return; }
+    const salt = Math.round(w * pct / 100);
+    document.getElementById('saltAmount').textContent = salt.toLocaleString();
+    document.getElementById('pctLabel').textContent = pct + '%';
+    document.getElementById('r-weight').textContent = w.toLocaleString() + ' g';
+    document.getElementById('r-pct').textContent = pct + '%';
+    document.getElementById('r-omoshi').textContent = '最初 ' + Math.round(w*2).toLocaleString() + 'g → 水上がり後 ' + Math.round(w).toLocaleString() + 'g';
+    const rc = document.getElementById('result');
+    rc.classList.add('show');
+    rc.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  document.getElementById('weight').addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); });
+</script>
+</body>
+</html>

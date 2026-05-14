@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>立て塩 塩水計算｜干物・魚の塩水濃度を計算</title>
+  <meta name="description" content="干物作りの立て塩（塩水）に必要な塩と水の量を計算。魚の種類別塩分濃度に対応。">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif; background: #f3efe8; color: #2c2c2c; font-size: 16px; line-height: 1.6; }
+    header { background: linear-gradient(160deg, #1e3d0a 0%, #2d5c12 50%, #3d7a1a 100%); color: white; padding: 20px 16px 18px; position: relative; overflow: hidden; }
+    header::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 20% 50%, rgba(120,200,60,0.15) 0%, transparent 60%); }
+    .header-inner { max-width: 640px; margin: 0 auto; position: relative; z-index: 1; }
+    .back-link { display: inline-flex; align-items: center; gap: 4px; color: rgba(255,255,255,0.75); font-size: 0.8rem; text-decoration: none; margin-bottom: 10px; }
+    header h1 { font-size: 1.25rem; font-weight: bold; }
+    header p { font-size: 0.8rem; opacity: 0.78; margin-top: 5px; }
+    .ad-slot { background: #e8e2d8; border: 1px dashed #b8a888; text-align: center; padding: 12px; margin: 0 auto; max-width: 640px; color: #907050; font-size: 0.8rem; min-height: 90px; display: flex; align-items: center; justify-content: center; }
+    .container { max-width: 640px; margin: 0 auto; padding: 20px 16px 48px; }
+    .card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+    .card-title { font-size: 0.88rem; font-weight: bold; color: #1e3d0a; margin-bottom: 14px; }
+    .input-label { font-size: 0.82rem; color: #666; margin-bottom: 6px; display: block; }
+    .input-row { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+    .input-field { flex: 1; height: 52px; border: 2px solid #e0d8c8; border-radius: 12px; padding: 0 16px; font-size: 1.2rem; font-weight: bold; background: #fafaf7; outline: none; transition: border-color 0.2s; -webkit-appearance: none; }
+    .input-field:focus { border-color: #4a8020; background: white; }
+    .input-unit { font-size: 0.9rem; color: #666; white-space: nowrap; }
+    .preset-label { font-size: 0.78rem; color: #888; margin-bottom: 7px; }
+    .preset-row { display: flex; gap: 7px; flex-wrap: wrap; }
+    .preset-btn { padding: 7px 14px; background: #f0ece4; border: 1px solid #d8d0c0; border-radius: 20px; font-size: 0.82rem; color: #555; cursor: pointer; }
+    .preset-btn.selected { background: linear-gradient(135deg, #2d5c12, #4a8020); color: white; border-color: transparent; }
+    .fish-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .fish-btn { padding: 10px 8px; background: #f0ece4; border: 1px solid #d8d0c0; border-radius: 12px; font-size: 0.82rem; color: #555; cursor: pointer; text-align: left; transition: all 0.15s; }
+    .fish-btn:active, .fish-btn.selected { background: linear-gradient(135deg, #2d5c12, #4a8020); color: white; border-color: transparent; }
+    .fish-name { font-weight: bold; display: block; }
+    .fish-pct { font-size: 0.72rem; opacity: 0.8; }
+    .slider-row { display: flex; align-items: center; gap: 10px; }
+    .slider { flex: 1; -webkit-appearance: none; height: 6px; background: #e0d8c8; border-radius: 3px; outline: none; }
+    .slider::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; background: linear-gradient(135deg, #2d5c12, #4a8020); border-radius: 50%; cursor: pointer; }
+    .slider-value { font-size: 1.1rem; font-weight: bold; color: #2d5c12; min-width: 44px; text-align: right; }
+    .slider-hint { font-size: 0.75rem; color: #aaa; margin-top: 4px; }
+    .calc-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #2d5c12, #4a8020); color: white; border: none; border-radius: 14px; font-size: 1rem; font-weight: bold; cursor: pointer; box-shadow: 0 4px 14px rgba(45,92,18,0.3); transition: transform 0.15s; }
+    .calc-btn:active { transform: scale(0.97); }
+    .result-card { background: linear-gradient(135deg, #f0f7e8, #e8f3d8); border: 2px solid #b8d890; border-radius: 16px; padding: 22px 20px; margin-top: 16px; display: none; }
+    .result-card.show { display: block; }
+    .result-title { font-size: 0.85rem; color: #2d5c12; font-weight: bold; margin-bottom: 20px; }
+    .result-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .result-item { background: rgba(255,255,255,0.7); border-radius: 12px; padding: 14px; text-align: center; }
+    .result-item-label { font-size: 0.75rem; color: #5a7a30; margin-bottom: 6px; }
+    .result-item-num { font-size: 2rem; font-weight: bold; color: #1e3d0a; line-height: 1; }
+    .result-item-unit { font-size: 0.85rem; color: #4a8020; font-weight: bold; }
+    .result-row { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid rgba(100,150,50,0.2); font-size: 0.85rem; }
+    .result-row:last-child { border-bottom: none; }
+    .result-row-label { color: #555; }
+    .result-row-val { font-weight: bold; color: #2d5c12; }
+    .info-card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .info-title { font-size: 0.9rem; font-weight: bold; color: #1e3d0a; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid #e8e0d0; }
+    .info-item { margin-bottom: 14px; }
+    .info-q { font-size: 0.83rem; font-weight: bold; color: #2d5c12; margin-bottom: 4px; }
+    .info-a { font-size: 0.82rem; color: #555; line-height: 1.7; }
+    .tip-list { list-style: none; margin-top: 14px; }
+    .tip-list li { font-size: 0.83rem; color: #555; line-height: 1.8; padding-left: 1.4em; position: relative; }
+    .tip-list li::before { content: '🐟'; position: absolute; left: 0; font-size: 0.72rem; top: 0.2em; }
+    footer { background: linear-gradient(135deg, #1e3d0a, #2d5c12); color: #8aba5c; text-align: center; padding: 20px; font-size: 0.75rem; }
+    footer a { color: #8aba5c; text-decoration: none; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a href="../index.html" class="back-link">← 保存食計算ツール TOP</a>
+    <h1>🐟 立て塩 塩水計算</h1>
+    <p>干物作りの塩水（立て塩）の量を計算</p>
+  </div>
+</header>
+<div class="ad-slot">広告</div>
+<div class="container">
+
+  <div class="card">
+    <div class="card-title">🐟 魚の種類を選ぶ</div>
+    <div class="fish-grid" id="fishGrid">
+      <button class="fish-btn selected" onclick="selectFish(this, 4, '白身魚全般')">
+        <span class="fish-name">白身魚全般</span>
+        <span class="fish-pct">塩分目安：3〜5%</span>
+      </button>
+      <button class="fish-btn" onclick="selectFish(this, 6, '赤身魚（アジ等）')">
+        <span class="fish-name">赤身魚（アジ等）</span>
+        <span class="fish-pct">塩分目安：5〜8%</span>
+      </button>
+      <button class="fish-btn" onclick="selectFish(this, 9, '鯖（サバ）')">
+        <span class="fish-name">鯖（サバ）</span>
+        <span class="fish-pct">塩分目安：8〜10%</span>
+      </button>
+      <button class="fish-btn" onclick="selectFish(this, 3, 'いか・えび')">
+        <span class="fish-name">いか・えび</span>
+        <span class="fish-pct">塩分目安：2〜4%</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💧 塩水の量を入力</div>
+    <label class="input-label">用意する塩水の量（魚が浸かる量）</label>
+    <div class="input-row">
+      <input type="number" class="input-field" id="water" placeholder="例：1000" inputmode="numeric">
+      <span class="input-unit">ml（cc）</span>
+    </div>
+    <div class="preset-label">よく使う量</div>
+    <div class="preset-row">
+      <button class="preset-btn" onclick="setWater(500)">500ml</button>
+      <button class="preset-btn" onclick="setWater(1000)">1L</button>
+      <button class="preset-btn" onclick="setWater(2000)">2L</button>
+      <button class="preset-btn" onclick="setWater(3000)">3L</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🎚️ 塩分濃度</div>
+    <div class="slider-row">
+      <input type="range" class="slider" id="saltPct" min="1" max="15" step="0.5" value="4" oninput="updateSlider()">
+      <span class="slider-value" id="saltPctVal">4%</span>
+    </div>
+    <div class="slider-hint" id="sliderHint">白身魚：3〜5%　赤身魚：5〜8%　鯖：8〜10%</div>
+  </div>
+
+  <button class="calc-btn" onclick="calculate()">計算する</button>
+
+  <div class="result-card" id="result">
+    <div class="result-title">✅ 計算結果</div>
+    <div class="result-2col">
+      <div class="result-item">
+        <div class="result-item-label">塩の量</div>
+        <span class="result-item-num" id="saltAmount">—</span>
+        <span class="result-item-unit">g</span>
+      </div>
+      <div class="result-item">
+        <div class="result-item-label">水の量</div>
+        <span class="result-item-num" id="waterAmount">—</span>
+        <span class="result-item-unit">ml</span>
+      </div>
+    </div>
+    <div>
+      <div class="result-row"><span class="result-row-label">塩水の合計量</span><span class="result-row-val" id="r-total">—</span></div>
+      <div class="result-row"><span class="result-row-label">塩分濃度</span><span class="result-row-val" id="r-pct">—</span></div>
+      <div class="result-row"><span class="result-row-label">漬け時間の目安</span><span class="result-row-val" id="r-time">—</span></div>
+    </div>
+  </div>
+
+  <div class="info-card" style="margin-top:16px;">
+    <div class="info-title">📖 立て塩のポイント</div>
+    <div class="info-item">
+      <div class="info-q">Q. 立て塩とは？</div>
+      <div class="info-a">塩水に魚を漬ける方法です（「立て塩＝塩水を立てる」）。塩を直接ふる「振り塩」より均一に塩が入り、生臭みも抜けやすくなります。干物・塩焼き用の下処理に使われます。</div>
+    </div>
+    <div class="info-item">
+      <div class="info-q">Q. 漬け時間はどのくらい？</div>
+      <div class="info-a">白身魚（薄め）：30分〜1時間。赤身魚・厚めの身：1〜3時間。鯖など脂の乗った魚：2〜4時間。漬けすぎると塩辛くなるので時々確認を。</div>
+    </div>
+    <ul class="tip-list">
+      <li>塩は完全に溶かしてから魚を入れる</li>
+      <li>冷蔵庫で漬けると衛生的で旨みが落ちにくい</li>
+      <li>漬けた後は水気をよくふき取ってから干す</li>
+      <li>干す時間は半日〜1日（表面が乾いたらOK）</li>
+      <li>冬の晴れた風の強い日が干物日和</li>
+    </ul>
+  </div>
+
+  <div class="info-card" style="margin-top:14px;">
+    <div class="info-title">🐟 魚種別 塩分濃度と漬け時間の目安</div>
+    <div>
+      <div class="result-row"><span class="result-row-label">アジ（一夜干し）</span><span class="result-row-val">4〜5% / 1〜2時間</span></div>
+      <div class="result-row"><span class="result-row-label">イワシ</span><span class="result-row-val">5〜7% / 1〜2時間</span></div>
+      <div class="result-row"><span class="result-row-label">カレイ・ヒラメ</span><span class="result-row-val">3〜4% / 30分〜1時間</span></div>
+      <div class="result-row"><span class="result-row-label">サバ</span><span class="result-row-val">8〜10% / 2〜4時間</span></div>
+      <div class="result-row"><span class="result-row-label">サンマ</span><span class="result-row-val">5〜6% / 1〜2時間</span></div>
+    </div>
+  </div>
+
+</div>
+<div style="max-width:640px; margin:0 auto; padding:0 16px 8px;">
+  <div class="ad-slot" style="min-height:250px;">広告</div>
+</div>
+<footer>
+  <p>保存食計算ツール | <a href="../privacy.html">プライバシーポリシー</a></p>
+</footer>
+<script>
+  const fishTimes = {
+    '白身魚全般': '30分〜1時間', '赤身魚（アジ等）': '1〜3時間', '鯖（サバ）': '2〜4時間', 'いか・えび': '30分〜1時間'
+  };
+  let selectedFishName = '白身魚全般';
+  function selectFish(btn, pct, name) {
+    document.querySelectorAll('.fish-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    document.getElementById('saltPct').value = pct;
+    updateSlider();
+    selectedFishName = name;
+  }
+  function updateSlider() { document.getElementById('saltPctVal').textContent = document.getElementById('saltPct').value + '%'; }
+  function setWater(ml) { document.getElementById('water').value = ml; document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('selected')); event.target.classList.add('selected'); }
+  function calculate() {
+    const w = parseFloat(document.getElementById('water').value);
+    const pct = parseFloat(document.getElementById('saltPct').value);
+    if (!w || w <= 0) { alert('塩水の量を入力してください'); return; }
+    const salt = Math.round(w * pct / 100);
+    const water = w - salt;
+    document.getElementById('saltAmount').textContent = salt.toLocaleString();
+    document.getElementById('waterAmount').textContent = water.toLocaleString();
+    document.getElementById('r-total').textContent = w.toLocaleString() + ' ml';
+    document.getElementById('r-pct').textContent = pct + '%';
+    document.getElementById('r-time').textContent = fishTimes[selectedFishName] || '1〜2時間';
+    const rc = document.getElementById('result');
+    rc.classList.add('show');
+    rc.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  document.getElementById('water').addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); });
+</script>
+</body>
+</html>

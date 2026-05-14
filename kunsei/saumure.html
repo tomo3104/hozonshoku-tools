@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ソミュール液計算｜燻製の塩水・砂糖・水の量を計算</title>
+  <meta name="description" content="燻製に使うソミュール液（ブライン液）に必要な塩・砂糖・水の量を自動計算。素材の重さと塩分濃度から必要量が出ます。">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif; background: #f3efe8; color: #2c2c2c; font-size: 16px; line-height: 1.6; }
+    header { background: linear-gradient(160deg, #1e3d0a 0%, #2d5c12 50%, #3d7a1a 100%); color: white; padding: 20px 16px 18px; position: relative; overflow: hidden; }
+    header::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 20% 50%, rgba(120,200,60,0.15) 0%, transparent 60%); }
+    .header-inner { max-width: 640px; margin: 0 auto; position: relative; z-index: 1; }
+    .back-link { display: inline-flex; align-items: center; gap: 4px; color: rgba(255,255,255,0.75); font-size: 0.8rem; text-decoration: none; margin-bottom: 10px; }
+    header h1 { font-size: 1.25rem; font-weight: bold; }
+    header p { font-size: 0.8rem; opacity: 0.78; margin-top: 5px; }
+    .ad-slot { background: #e8e2d8; border: 1px dashed #b8a888; text-align: center; padding: 12px; margin: 0 auto; max-width: 640px; color: #907050; font-size: 0.8rem; min-height: 90px; display: flex; align-items: center; justify-content: center; }
+    .container { max-width: 640px; margin: 0 auto; padding: 20px 16px 48px; }
+    .card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+    .card-title { font-size: 0.88rem; font-weight: bold; color: #1e3d0a; margin-bottom: 14px; }
+    .input-label { font-size: 0.82rem; color: #666; margin-bottom: 6px; display: block; }
+    .input-row { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+    .input-field { flex: 1; height: 52px; border: 2px solid #e0d8c8; border-radius: 12px; padding: 0 16px; font-size: 1.2rem; font-weight: bold; background: #fafaf7; outline: none; transition: border-color 0.2s; -webkit-appearance: none; }
+    .input-field:focus { border-color: #4a8020; background: white; }
+    .input-unit { font-size: 0.9rem; color: #666; white-space: nowrap; }
+    .preset-label { font-size: 0.78rem; color: #888; margin-bottom: 7px; }
+    .preset-row { display: flex; gap: 7px; flex-wrap: wrap; }
+    .preset-btn { padding: 7px 14px; background: #f0ece4; border: 1px solid #d8d0c0; border-radius: 20px; font-size: 0.82rem; color: #555; cursor: pointer; }
+    .preset-btn.selected { background: linear-gradient(135deg, #2d5c12, #4a8020); color: white; border-color: transparent; }
+    .material-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .material-btn { padding: 10px 8px; background: #f0ece4; border: 1px solid #d8d0c0; border-radius: 12px; font-size: 0.82rem; color: #555; cursor: pointer; text-align: left; }
+    .material-btn.selected { background: linear-gradient(135deg, #2d5c12, #4a8020); color: white; border-color: transparent; }
+    .material-name { font-weight: bold; display: block; }
+    .material-pct { font-size: 0.72rem; opacity: 0.8; }
+    .slider-row { display: flex; align-items: center; gap: 10px; }
+    .slider { flex: 1; -webkit-appearance: none; height: 6px; background: #e0d8c8; border-radius: 3px; outline: none; }
+    .slider::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; background: linear-gradient(135deg, #2d5c12, #4a8020); border-radius: 50%; cursor: pointer; }
+    .slider-value { font-size: 1.1rem; font-weight: bold; color: #2d5c12; min-width: 44px; text-align: right; }
+    .slider-hint { font-size: 0.75rem; color: #aaa; margin-top: 4px; }
+    .sugar-toggle { display: flex; align-items: center; gap: 10px; padding: 12px 0; }
+    .toggle-label { font-size: 0.85rem; color: #555; flex: 1; }
+    .toggle { position: relative; display: inline-block; width: 44px; height: 24px; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider { position: absolute; cursor: pointer; inset: 0; background: #d8d0c0; border-radius: 24px; transition: 0.2s; }
+    .toggle-slider::before { content: ''; position: absolute; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.2s; }
+    input:checked + .toggle-slider { background: linear-gradient(135deg, #2d5c12, #4a8020); }
+    input:checked + .toggle-slider::before { transform: translateX(20px); }
+    .calc-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #2d5c12, #4a8020); color: white; border: none; border-radius: 14px; font-size: 1rem; font-weight: bold; cursor: pointer; box-shadow: 0 4px 14px rgba(45,92,18,0.3); transition: transform 0.15s; }
+    .calc-btn:active { transform: scale(0.97); }
+    .result-card { background: linear-gradient(135deg, #f0f7e8, #e8f3d8); border: 2px solid #b8d890; border-radius: 16px; padding: 22px 20px; margin-top: 16px; display: none; }
+    .result-card.show { display: block; }
+    .result-title { font-size: 0.85rem; color: #2d5c12; font-weight: bold; margin-bottom: 16px; }
+    .result-3col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+    .result-item { background: rgba(255,255,255,0.7); border-radius: 12px; padding: 12px 8px; text-align: center; }
+    .result-item-label { font-size: 0.72rem; color: #5a7a30; margin-bottom: 4px; }
+    .result-item-num { font-size: 1.6rem; font-weight: bold; color: #1e3d0a; line-height: 1; }
+    .result-item-unit { font-size: 0.78rem; color: #4a8020; font-weight: bold; }
+    .result-row { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid rgba(100,150,50,0.2); font-size: 0.85rem; }
+    .result-row:last-child { border-bottom: none; }
+    .result-row-label { color: #555; }
+    .result-row-val { font-weight: bold; color: #2d5c12; }
+    .info-card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .info-title { font-size: 0.9rem; font-weight: bold; color: #1e3d0a; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid #e8e0d0; }
+    .info-item { margin-bottom: 14px; }
+    .info-q { font-size: 0.83rem; font-weight: bold; color: #2d5c12; margin-bottom: 4px; }
+    .info-a { font-size: 0.82rem; color: #555; line-height: 1.7; }
+    .tip-list { list-style: none; margin-top: 14px; }
+    .tip-list li { font-size: 0.83rem; color: #555; line-height: 1.8; padding-left: 1.4em; position: relative; }
+    .tip-list li::before { content: '🔥'; position: absolute; left: 0; font-size: 0.72rem; top: 0.2em; }
+    footer { background: linear-gradient(135deg, #1e3d0a, #2d5c12); color: #8aba5c; text-align: center; padding: 20px; font-size: 0.75rem; }
+    footer a { color: #8aba5c; text-decoration: none; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a href="../index.html" class="back-link">← 保存食計算ツール TOP</a>
+    <h1>🧪 ソミュール液計算</h1>
+    <p>燻製用ソミュール液（ブライン液）の配合を計算</p>
+  </div>
+</header>
+<div class="ad-slot">広告</div>
+<div class="container">
+
+  <div class="card">
+    <div class="card-title">🥩 素材を選ぶ</div>
+    <div class="material-grid" id="matGrid">
+      <button class="material-btn selected" onclick="selectMat(this, 5, '豚肉・ベーコン')">
+        <span class="material-name">豚肉・ベーコン</span>
+        <span class="material-pct">塩分目安：5〜6%</span>
+      </button>
+      <button class="material-btn" onclick="selectMat(this, 4, '鶏肉・ハム')">
+        <span class="material-name">鶏肉・ハム</span>
+        <span class="material-pct">塩分目安：4〜5%</span>
+      </button>
+      <button class="material-btn" onclick="selectMat(this, 4, '魚・サーモン')">
+        <span class="material-name">魚・サーモン</span>
+        <span class="material-pct">塩分目安：3〜5%</span>
+      </button>
+      <button class="material-btn" onclick="selectMat(this, 3, 'チーズ・卵')">
+        <span class="material-name">チーズ・卵</span>
+        <span class="material-pct">塩分目安：2〜4%</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💧 ソミュール液の量を入力</div>
+    <label class="input-label">用意する液の量（素材が浸かる量）</label>
+    <div class="input-row">
+      <input type="number" class="input-field" id="water" placeholder="例：1000" inputmode="numeric">
+      <span class="input-unit">ml</span>
+    </div>
+    <div class="preset-label">よく使う量</div>
+    <div class="preset-row">
+      <button class="preset-btn" onclick="setWater(500)">500ml</button>
+      <button class="preset-btn" onclick="setWater(1000)">1L</button>
+      <button class="preset-btn" onclick="setWater(2000)">2L</button>
+      <button class="preset-btn" onclick="setWater(3000)">3L</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🎚️ 塩分濃度の設定</div>
+    <div class="slider-row">
+      <input type="range" class="slider" id="saltPct" min="1" max="12" step="0.5" value="5" oninput="updateSlider()">
+      <span class="slider-value" id="saltPctVal">5%</span>
+    </div>
+    <div class="slider-hint">豚・鶏：4〜6%　魚：3〜5%　チーズ等：2〜4%</div>
+    <div class="sugar-toggle">
+      <span class="toggle-label">砂糖を加える（旨みアップ・塩辛さを和らげる）</span>
+      <label class="toggle">
+        <input type="checkbox" id="sugarToggle" checked>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <button class="calc-btn" onclick="calculate()">計算する</button>
+
+  <div class="result-card" id="result">
+    <div class="result-title">✅ 計算結果</div>
+    <div class="result-3col">
+      <div class="result-item">
+        <div class="result-item-label">塩</div>
+        <span class="result-item-num" id="saltAmount">—</span>
+        <span class="result-item-unit">g</span>
+      </div>
+      <div class="result-item" id="sugarCol">
+        <div class="result-item-label">砂糖</div>
+        <span class="result-item-num" id="sugarAmount">—</span>
+        <span class="result-item-unit">g</span>
+      </div>
+      <div class="result-item">
+        <div class="result-item-label">水</div>
+        <span class="result-item-num" id="waterAmount">—</span>
+        <span class="result-item-unit">ml</span>
+      </div>
+    </div>
+    <div>
+      <div class="result-row"><span class="result-row-label">合計液量</span><span class="result-row-val" id="r-total">—</span></div>
+      <div class="result-row"><span class="result-row-label">塩分濃度</span><span class="result-row-val" id="r-pct">—</span></div>
+      <div class="result-row"><span class="result-row-label">漬け込み時間の目安</span><span class="result-row-val" id="r-time">—</span></div>
+    </div>
+  </div>
+
+  <div class="info-card" style="margin-top:16px;">
+    <div class="info-title">📖 ソミュール液のポイント</div>
+    <div class="info-item">
+      <div class="info-q">Q. ソミュール液とは？</div>
+      <div class="info-a">燻製前に肉・魚を漬け込む塩水のことです。「ブライン液」とも呼ばれます。塩で下味をつけながら保水力を高め、燻製後もジューシーに仕上がります。</div>
+    </div>
+    <div class="info-item">
+      <div class="info-q">Q. 砂糖は必要？</div>
+      <div class="info-a">必須ではありませんが、塩分5%に対して砂糖2〜3%程度加えると塩辛さが和らぎ、旨みが増します。砂糖が加わると色付きもよくなります。</div>
+    </div>
+    <div class="info-item">
+      <div class="info-q">Q. ピックル注射（インジェクション）とは？</div>
+      <div class="info-a">大きな肉塊に注射器でソミュール液を注入する方法。均一に短時間で塩分を行き渡らせることができます。厚み5cm以上の肉に有効です。</div>
+    </div>
+    <ul class="tip-list">
+      <li>塩と砂糖を水に溶かし、完全に冷ましてから素材を漬ける</li>
+      <li>漬け込みは冷蔵庫内（4℃以下）で行う</li>
+      <li>漬け込み後は水洗いして表面の塩を流す</li>
+      <li>乾燥（ペリクル形成）してから燻製をかけると煙が乗りやすい</li>
+      <li>ローリエ・コショウ・ニンニク等を加えると風味が増す</li>
+    </ul>
+  </div>
+
+  <div class="info-card" style="margin-top:14px;">
+    <div class="info-title">🥩 素材別 漬け込み時間の目安</div>
+    <div>
+      <div class="result-row"><span class="result-row-label">鶏胸肉・もも肉</span><span class="result-row-val">6〜12時間</span></div>
+      <div class="result-row"><span class="result-row-label">豚バラ・豚肩ロース</span><span class="result-row-val">12〜24時間</span></div>
+      <div class="result-row"><span class="result-row-label">ベーコン用豚バラ（厚）</span><span class="result-row-val">3〜7日間</span></div>
+      <div class="result-row"><span class="result-row-label">魚（1尾・切り身）</span><span class="result-row-val">1〜3時間</span></div>
+      <div class="result-row"><span class="result-row-label">チーズ・卵</span><span class="result-row-val">1〜2時間</span></div>
+    </div>
+  </div>
+
+</div>
+<div style="max-width:640px; margin:0 auto; padding:0 16px 8px;">
+  <div class="ad-slot" style="min-height:250px;">広告</div>
+</div>
+<footer>
+  <p>保存食計算ツール | <a href="../privacy.html">プライバシーポリシー</a></p>
+</footer>
+<script>
+  const matTimes = { '豚肉・ベーコン': '12〜24時間', '鶏肉・ハム': '6〜12時間', '魚・サーモン': '1〜3時間', 'チーズ・卵': '1〜2時間' };
+  let selectedMat = '豚肉・ベーコン';
+  function selectMat(btn, pct, name) {
+    document.querySelectorAll('.material-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    document.getElementById('saltPct').value = pct;
+    updateSlider();
+    selectedMat = name;
+  }
+  function updateSlider() { document.getElementById('saltPctVal').textContent = document.getElementById('saltPct').value + '%'; }
+  function setWater(ml) { document.getElementById('water').value = ml; document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('selected')); event.target.classList.add('selected'); }
+  function calculate() {
+    const total = parseFloat(document.getElementById('water').value);
+    const pct = parseFloat(document.getElementById('saltPct').value);
+    const hasSugar = document.getElementById('sugarToggle').checked;
+    if (!total || total <= 0) { alert('液の量を入力してください'); return; }
+    const salt = Math.round(total * pct / 100);
+    const sugar = hasSugar ? Math.round(total * (pct * 0.5) / 100) : 0;
+    const water = total - salt - sugar;
+    document.getElementById('saltAmount').textContent = salt.toLocaleString();
+    document.getElementById('sugarAmount').textContent = hasSugar ? sugar.toLocaleString() : '—';
+    document.getElementById('sugarCol').style.opacity = hasSugar ? '1' : '0.4';
+    document.getElementById('waterAmount').textContent = water.toLocaleString();
+    document.getElementById('r-total').textContent = total.toLocaleString() + ' ml';
+    document.getElementById('r-pct').textContent = pct + '%';
+    document.getElementById('r-time').textContent = matTimes[selectedMat] || '6〜12時間';
+    const rc = document.getElementById('result');
+    rc.classList.add('show');
+    rc.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  document.getElementById('water').addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); });
+</script>
+</body>
+</html>

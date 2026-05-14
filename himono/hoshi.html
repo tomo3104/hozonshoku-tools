@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>干物 乾燥時間 早見表｜魚種・季節別の目安</title>
+  <meta name="description" content="干物を作るときの乾燥時間を魚種別・季節別にまとめた早見表。一夜干し・本干し・半干しの違いと時間の目安。">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif; background: #f3efe8; color: #2c2c2c; font-size: 16px; line-height: 1.6; }
+    header { background: linear-gradient(160deg, #1e3d0a 0%, #2d5c12 50%, #3d7a1a 100%); color: white; padding: 20px 16px 18px; position: relative; overflow: hidden; }
+    header::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 20% 50%, rgba(120,200,60,0.15) 0%, transparent 60%); }
+    .header-inner { max-width: 640px; margin: 0 auto; position: relative; z-index: 1; }
+    .back-link { display: inline-flex; align-items: center; gap: 4px; color: rgba(255,255,255,0.75); font-size: 0.8rem; text-decoration: none; margin-bottom: 10px; }
+    header h1 { font-size: 1.25rem; font-weight: bold; }
+    header p { font-size: 0.8rem; opacity: 0.78; margin-top: 5px; }
+    .ad-slot { background: #e8e2d8; border: 1px dashed #b8a888; text-align: center; padding: 12px; margin: 0 auto; max-width: 640px; color: #907050; font-size: 0.8rem; min-height: 90px; display: flex; align-items: center; justify-content: center; }
+    .container { max-width: 640px; margin: 0 auto; padding: 20px 16px 48px; }
+    .tab-group { display: flex; gap: 8px; margin-bottom: 20px; }
+    .tab-btn { flex: 1; padding: 10px 6px; background: white; border: 2px solid #d8d0c0; border-radius: 10px; font-size: 0.82rem; font-weight: bold; color: #888; cursor: pointer; transition: all 0.18s; text-align: center; }
+    .tab-btn.active { background: linear-gradient(135deg, #2d5c12, #4a8020); color: white; border-color: transparent; }
+    .card { background: white; border-radius: 14px; padding: 18px; margin-bottom: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.07); }
+    .card-title { font-size: 0.9rem; font-weight: bold; color: #1e3d0a; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid #e8e0d0; }
+    .fish-item { padding: 12px 0; border-bottom: 1px solid #f0ece4; }
+    .fish-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .fish-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+    .fish-emoji { font-size: 1.3rem; }
+    .fish-name { font-weight: bold; font-size: 0.9rem; color: #1e3d0a; }
+    .time-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 4px; }
+    .time-badge { font-size: 0.72rem; font-weight: bold; padding: 2px 8px; border-radius: 10px; }
+    .badge-ichiyo { background: #e8f3d8; color: #2d5c12; }
+    .badge-honboshi { background: #fff0d8; color: #c07020; }
+    .badge-han { background: #f0e8ff; color: #6030a0; }
+    .fish-desc { font-size: 0.8rem; color: #666; line-height: 1.6; }
+    .weather-card { background: linear-gradient(135deg, #f0f7e8, #e8f3d8); border: 1px solid #b8d890; border-radius: 14px; padding: 18px; margin-bottom: 16px; }
+    .weather-title { font-size: 0.9rem; font-weight: bold; color: #1e3d0a; margin-bottom: 14px; }
+    .weather-row { display: flex; gap: 8px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid rgba(100,150,50,0.2); }
+    .weather-row:last-child { border-bottom: none; }
+    .weather-icon { font-size: 1.2rem; width: 28px; flex-shrink: 0; }
+    .weather-content { flex: 1; }
+    .weather-label { font-weight: bold; font-size: 0.85rem; color: #1e3d0a; }
+    .weather-desc { font-size: 0.8rem; color: #555; line-height: 1.5; margin-top: 2px; }
+    .note-card { background: white; border-radius: 14px; padding: 18px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+    .note-title { font-size: 0.9rem; font-weight: bold; color: #1e3d0a; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #e8e0d0; }
+    .tip-list { list-style: none; }
+    .tip-list li { font-size: 0.83rem; color: #555; line-height: 1.8; padding-left: 1.4em; position: relative; }
+    .tip-list li::before { content: '☀️'; position: absolute; left: 0; font-size: 0.72rem; top: 0.2em; }
+    footer { background: linear-gradient(135deg, #1e3d0a, #2d5c12); color: #8aba5c; text-align: center; padding: 20px; font-size: 0.75rem; }
+    footer a { color: #8aba5c; text-decoration: none; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a href="../index.html" class="back-link">← 保存食計算ツール TOP</a>
+    <h1>☀️ 乾燥時間 早見表</h1>
+    <p>魚種・季節別の干し時間の目安</p>
+  </div>
+</header>
+<div class="ad-slot">広告</div>
+<div class="container">
+
+  <div class="tab-group">
+    <button class="tab-btn active" onclick="showTab('ichiyo')">一夜干し</button>
+    <button class="tab-btn" onclick="showTab('honboshi')">本干し</button>
+    <button class="tab-btn" onclick="showTab('tenko')">天候・季節別</button>
+  </div>
+
+  <!-- 一夜干し -->
+  <div id="tab-ichiyo">
+    <div class="card">
+      <div class="card-title">🌙 一夜干し（半干し）の目安時間</div>
+      <div class="fish-item">
+        <div class="fish-header"><span class="fish-emoji">🐟</span><span class="fish-name">アジ（一夜干しの定番）</span></div>
+        <div class="time-badges"><span class="time-badge badge-ichiyo">冬：8〜12時間</span><span class="time-badge badge-ichiyo">春秋：6〜10時間</span><span class="time-badge badge-ichiyo">夏：5〜8時間</span></div>
+        <div class="fish-desc">表面が乾いて薄い膜（ペリクル）ができたらOK。身がまだ柔らかく、焼くとふっくら仕上がる。</div>
+      </div>
+      <div class="fish-item">
+        <div class="fish-header"><span class="fish-emoji">🐟</span><span class="fish-name">イワシ（煮干し・丸干し）</span></div>
+        <div class="time-badges"><span class="time-badge badge-ichiyo">冬：10〜15時間</span><span class="time-badge badge-ichiyo">夏：6〜10時間</span></div>
+        <div class="fish-desc">丸干しは一夜干しより少し長め。表面が乾燥して軽くなったら干し上がりの目安。</div>
+      </div>
+      <div class="fish-item">
+        <div class="fish-header"><span class="fish-emoji">🐟</span><span class="fish-name">カレイ・ヒラメ（薄めの白身魚）</span></div>
+        <div class="time-badges"><span class="time-badge badge-ichiyo">冬：6〜10時間</span><span class="time-badge badge-ichiyo">夏：4〜6時間</span></div>
+        <div class="fish-desc">薄いので早く乾く。干しすぎると固くなるので注意。半干しで食感を残すのがポイント。</div>
+      </div>
+      <div class="fish-item">
+        <div class="fish-header"><span class="fish-emoji">🐟</span><span class="fish-name">サンマ</span></div>
+        <div class="time-badges"><span class="time-badge badge-ichiyo">冬：8〜12時間</span><span class="time-badge badge-ichiyo">秋：6〜10時間</span></div>
+        <div class="fish-desc">脂が多いので夏よりも秋冬に作るのがおすすめ。一夜干しは焼いたときに脂がのってジューシー。</div>
+      </div>
+      <div class="fish-item">
+        <div class="fish-header"><span class="fish-emoji">🦑</span><span class="fish-name">いか（スルメイカ）</span></div>
+        <div class="time-badges"><span class="time-badge badge-ichiyo">冬：1〜2日</span><span class="time-badge badge-ichiyo">秋：12〜18時間</span></div>
+        <div class="fish-desc">一夜干しより時間がかかる。表面が白くなりはじめたら干し上がりに近い。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 本干し -->
+  <div id="tab-honboshi" style="display:none;">
+    <div class="card">
+      <div class="card-title">🌞 本干し（しっかり乾燥）の目安</div>
+      <div class="fish-item">
+        <div class="fish-header"><span class="fish-emoji">🦑</span><span class="fish-name">スルメ（いか本干し）</span></div>
+        <div class="time-badges"><span class="time-badge badge-honboshi">冬：3〜5日</span><span class="time-badge badge-honboshi">秋：2〜3日</span></div>
+        <div class="fish-desc">カラカラに乾燥させる本スルメ。天日で2〜3日干し、夜は取り込む。重量が半分以下になるのが目安。</div>
+      </div>
+      <div class="fish-item">
+        <div class="fish-header"><span class="fish-emoji">🐟</span><span class="fish-name">煮干し（いわし）</span></div>
+        <div class="time-badges"><span class="time-badge badge-honboshi">冬：2〜3日</span><span class="time-badge badge-honboshi">夏：1〜2日</span></div>
+        <div class="fish-desc">ゆでてから干す。完全に乾燥したものは常温で1〜3ヶ月保存可能。</div>
+      </div>
+      <div class="fish-item">
+        <div class="fish-header"><span class="fish-emoji">🐟</span><span class="fish-name">干し魚（鮭・ぶり等の切り身）</span></div>
+        <div class="time-badges"><span class="time-badge badge-honboshi">冬：3〜7日</span></div>
+        <div class="fish-desc">風通しのよい軒下や網で干す。寒風干しは冬（11〜2月）が最適。表面に白い粉（塩の結晶）が出たら完成。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 天候・季節別 -->
+  <div id="tab-tenko" style="display:none;">
+    <div class="weather-card">
+      <div class="weather-title">🌤️ 季節・天候別の干し時間の調整</div>
+      <div class="weather-row">
+        <span class="weather-icon">❄️</span>
+        <div class="weather-content">
+          <div class="weather-label">冬（12〜2月）</div>
+          <div class="weather-desc">最適シーズン。気温が低く雑菌が繁殖しにくい。湿度も低く、風が乾燥を助ける。記載時間の長めを目安に。</div>
+        </div>
+      </div>
+      <div class="weather-row">
+        <span class="weather-icon">🌸</span>
+        <div class="weather-content">
+          <div class="weather-label">春秋（3〜5月・9〜11月）</div>
+          <div class="weather-desc">気温・湿度が中程度。乾燥日であれば問題なし。記載時間の中央値を目安に。</div>
+        </div>
+      </div>
+      <div class="weather-row">
+        <span class="weather-icon">☀️</span>
+        <div class="weather-content">
+          <div class="weather-label">夏（6〜8月）</div>
+          <div class="weather-desc">高温多湿で腐敗リスクが高い。直射日光より日かげの風通しがよい場所を選ぶ。夜間は必ず冷蔵庫へ。</div>
+        </div>
+      </div>
+      <div class="weather-row">
+        <span class="weather-icon">🌂</span>
+        <div class="weather-content">
+          <div class="weather-label">雨・曇りの日</div>
+          <div class="weather-desc">湿度が高く乾燥しにくい。扇風機の風を当てるか、干し網に入れて冷蔵庫内で乾燥させる方法もある。</div>
+        </div>
+      </div>
+      <div class="weather-row">
+        <span class="weather-icon">💨</span>
+        <div class="weather-content">
+          <div class="weather-label">風の強い晴れの日</div>
+          <div class="weather-desc">最高の干し日和。乾燥が早く進むので、記載時間より短くなる場合も。こまめに確認を。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note-card">
+    <div class="note-title">📌 干物作りの基本ポイント</div>
+    <ul class="tip-list">
+      <li>干し始め前に表面の水気をキッチンペーパーでふき取る</li>
+      <li>干し網を使うと虫・ホコリの付着を防げる</li>
+      <li>夜間や雨の日は取り込んで冷蔵庫保管を</li>
+      <li>干し上がりの確認：触ってみて表面がサラッとしているか</li>
+      <li>完成した干物は冷蔵で1週間・冷凍で3ヶ月が目安</li>
+    </ul>
+  </div>
+
+</div>
+<div style="max-width:640px; margin:0 auto; padding:0 16px 8px;">
+  <div class="ad-slot" style="min-height:250px;">広告</div>
+</div>
+<footer>
+  <p>保存食計算ツール | <a href="../privacy.html">プライバシーポリシー</a></p>
+</footer>
+<script>
+  const tabs = ['ichiyo', 'honboshi', 'tenko'];
+  function showTab(t) {
+    tabs.forEach(tab => document.getElementById('tab-' + tab).style.display = tab === t ? '' : 'none');
+    document.querySelectorAll('.tab-btn').forEach((btn, i) => btn.classList.toggle('active', tabs[i] === t));
+  }
+</script>
+</body>
+</html>

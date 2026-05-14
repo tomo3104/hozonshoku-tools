@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>山菜アク抜き方法 早見表｜わらび・たけのこ・ふき等の時間と注意点</title>
+  <meta name="description" content="山菜のアク抜き方法を種類別にまとめた早見表。わらび・ぜんまい・たけのこ・ふき・うど等の時間・方法・注意点を確認できます。">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif; background: #f3efe8; color: #2c2c2c; font-size: 16px; line-height: 1.6; }
+    header { background: linear-gradient(160deg, #1e3d0a 0%, #2d5c12 50%, #3d7a1a 100%); color: white; padding: 20px 16px 18px; position: relative; overflow: hidden; }
+    header::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 20% 50%, rgba(120,200,60,0.15) 0%, transparent 60%); }
+    .header-inner { max-width: 640px; margin: 0 auto; position: relative; z-index: 1; }
+    .back-link { display: inline-flex; align-items: center; gap: 4px; color: rgba(255,255,255,0.75); font-size: 0.8rem; text-decoration: none; margin-bottom: 10px; }
+    header h1 { font-size: 1.25rem; font-weight: bold; }
+    header p { font-size: 0.8rem; opacity: 0.78; margin-top: 5px; }
+    .ad-slot { background: #e8e2d8; border: 1px dashed #b8a888; text-align: center; padding: 12px; margin: 0 auto; max-width: 640px; color: #907050; font-size: 0.8rem; min-height: 90px; display: flex; align-items: center; justify-content: center; }
+    .container { max-width: 640px; margin: 0 auto; padding: 20px 16px 48px; }
+    .search-box { background: white; border-radius: 14px; padding: 16px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.07); }
+    .search-input { width: 100%; height: 46px; border: 2px solid #e0d8c8; border-radius: 10px; padding: 0 14px; font-size: 0.95rem; outline: none; background: #fafaf7; }
+    .search-input:focus { border-color: #4a8020; background: white; }
+    .plant-card { background: white; border-radius: 14px; margin-bottom: 14px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.07); }
+    .plant-header { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: linear-gradient(to right, #f0f7e8, #fafaf5); border-bottom: 1px solid #e8e0d0; cursor: pointer; }
+    .plant-emoji { font-size: 1.6rem; }
+    .plant-name { font-weight: bold; color: #1e3d0a; font-size: 0.95rem; }
+    .plant-season { font-size: 0.75rem; color: #6a9a40; margin-top: 2px; }
+    .plant-arrow { margin-left: auto; color: #aaa; font-size: 0.85rem; transition: transform 0.2s; }
+    .plant-arrow.open { transform: rotate(180deg); }
+    .plant-body { padding: 0 16px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s; }
+    .plant-body.open { max-height: 600px; padding: 14px 16px; }
+    .method-row { display: flex; gap: 12px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #f0ece4; }
+    .method-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .method-label { font-size: 0.72rem; font-weight: bold; color: #4a8020; background: #e8f3d8; padding: 2px 8px; border-radius: 10px; white-space: nowrap; margin-top: 2px; height: fit-content; }
+    .method-content { flex: 1; }
+    .method-title { font-size: 0.85rem; font-weight: bold; color: #2c2c2c; margin-bottom: 3px; }
+    .method-desc { font-size: 0.8rem; color: #666; line-height: 1.6; }
+    .method-time { display: inline-block; background: #fff3e0; color: #c07030; font-size: 0.72rem; font-weight: bold; padding: 1px 8px; border-radius: 10px; margin-top: 4px; }
+    .warning { display: flex; gap: 6px; align-items: flex-start; background: #fff8e8; border: 1px solid #f0d080; border-radius: 8px; padding: 8px 10px; margin-top: 8px; }
+    .warning-icon { font-size: 0.85rem; margin-top: 1px; }
+    .warning-text { font-size: 0.78rem; color: #805010; line-height: 1.5; }
+    .note-card { background: white; border-radius: 14px; padding: 18px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); margin-top: 4px; }
+    .note-title { font-size: 0.9rem; font-weight: bold; color: #1e3d0a; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #e8e0d0; }
+    .note-list { list-style: none; }
+    .note-list li { font-size: 0.83rem; color: #555; line-height: 1.8; padding-left: 1.4em; position: relative; }
+    .note-list li::before { content: '🌿'; position: absolute; left: 0; font-size: 0.72rem; top: 0.2em; }
+    footer { background: linear-gradient(135deg, #1e3d0a, #2d5c12); color: #8aba5c; text-align: center; padding: 20px; font-size: 0.75rem; }
+    footer a { color: #8aba5c; text-decoration: none; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a href="../index.html" class="back-link">← 保存食計算ツール TOP</a>
+    <h1>♨️ アク抜き方法 早見表</h1>
+    <p>山菜の種類別・アク抜き時間と注意点</p>
+  </div>
+</header>
+<div class="ad-slot">広告</div>
+<div class="container">
+
+  <div class="search-box">
+    <input type="text" class="search-input" placeholder="山菜名で絞り込み（例：わらび）" oninput="filterCards(this.value)">
+  </div>
+
+  <div id="cardList">
+
+    <div class="plant-card" data-name="わらび">
+      <div class="plant-header" onclick="toggleCard(this)">
+        <span class="plant-emoji">🌿</span>
+        <div>
+          <div class="plant-name">わらび</div>
+          <div class="plant-season">旬：4〜5月</div>
+        </div>
+        <span class="plant-arrow">▼</span>
+      </div>
+      <div class="plant-body">
+        <div class="method-row">
+          <span class="method-label">重曹法</span>
+          <div class="method-content">
+            <div class="method-title">重曹（食用）を使う方法</div>
+            <div class="method-desc">わらび1kgに対し重曹小さじ1〜2杯。熱湯をかけてふたをし、一晩（8〜12時間）置く。水が緑色になったらOK。</div>
+            <span class="method-time">一晩（8〜12時間）</span>
+          </div>
+        </div>
+        <div class="method-row">
+          <span class="method-label">木灰法</span>
+          <div class="method-content">
+            <div class="method-title">木灰（灰汁）を使う方法</div>
+            <div class="method-desc">昔ながらの方法。木灰大さじ2〜3杯を湯に溶かし、わらびを漬ける。重曹より柔らかく仕上がる。</div>
+            <span class="method-time">一晩（8〜12時間）</span>
+          </div>
+        </div>
+        <div class="warning">
+          <span class="warning-icon">⚠️</span>
+          <span class="warning-text">重曹が多すぎるとドロドロに溶けます。適量を守ってください。アク抜き後は流水でよく洗ってから使用。</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="plant-card" data-name="ぜんまい">
+      <div class="plant-header" onclick="toggleCard(this)">
+        <span class="plant-emoji">🌀</span>
+        <div>
+          <div class="plant-name">ぜんまい</div>
+          <div class="plant-season">旬：4〜5月</div>
+        </div>
+        <span class="plant-arrow">▼</span>
+      </div>
+      <div class="plant-body">
+        <div class="method-row">
+          <span class="method-label">揉み干し法</span>
+          <div class="method-content">
+            <div class="method-title">揉んで乾燥させる方法（本式）</div>
+            <div class="method-desc">熱湯でゆで、熱いうちに揉んで水分を出す→天日干し→揉む→干す、を3〜4日繰り返す。乾燥ぜんまいになる。</div>
+            <span class="method-time">3〜4日（乾燥ぜんまい）</span>
+          </div>
+        </div>
+        <div class="method-row">
+          <span class="method-label">重曹法</span>
+          <div class="method-content">
+            <div class="method-title">わらびと同様に重曹で抜く</div>
+            <div class="method-desc">重曹小さじ1を入れた熱湯でゆで、一晩水にさらす。乾燥品より風味は落ちるが手軽。</div>
+            <span class="method-time">一晩</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="plant-card" data-name="たけのこ">
+      <div class="plant-header" onclick="toggleCard(this)">
+        <span class="plant-emoji">🎋</span>
+        <div>
+          <div class="plant-name">たけのこ</div>
+          <div class="plant-season">旬：3〜5月</div>
+        </div>
+        <span class="plant-arrow">▼</span>
+      </div>
+      <div class="plant-body">
+        <div class="method-row">
+          <span class="method-label">米ぬか法</span>
+          <div class="method-content">
+            <div class="method-title">米ぬかと唐辛子で茹でる（定番）</div>
+            <div class="method-desc">たけのこ1kgに対し米ぬかひとつかみ（約大さじ3）＋唐辛子1〜2本。水から入れて沸騰後40〜60分ゆでる。そのまま冷めるまで置く。</div>
+            <span class="method-time">1〜2時間（冷ます時間含む）</span>
+          </div>
+        </div>
+        <div class="warning">
+          <span class="warning-icon">⚠️</span>
+          <span class="warning-text">採ってから時間が経つほどエグ味が強くなります。採れたらできるだけ早くゆでてください。</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="plant-card" data-name="ふき">
+      <div class="plant-header" onclick="toggleCard(this)">
+        <span class="plant-emoji">🍃</span>
+        <div>
+          <div class="plant-name">ふき（フキ）</div>
+          <div class="plant-season">旬：4〜6月</div>
+        </div>
+        <span class="plant-arrow">▼</span>
+      </div>
+      <div class="plant-body">
+        <div class="method-row">
+          <span class="method-label">板ずり塩茹で</span>
+          <div class="method-content">
+            <div class="method-title">塩をまぶして板ずりしてからゆでる</div>
+            <div class="method-desc">鍋に入る長さに切り、塩をまぶして板の上でゴロゴロと転がす（板ずり）。熱湯で2〜3分ゆで、すぐ冷水にとる。皮をむいて完成。</div>
+            <span class="method-time">5〜10分</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="plant-card" data-name="うど">
+      <div class="plant-header" onclick="toggleCard(this)">
+        <span class="plant-emoji">🌾</span>
+        <div>
+          <div class="plant-name">うど（ウド）</div>
+          <div class="plant-season">旬：3〜5月</div>
+        </div>
+        <span class="plant-arrow">▼</span>
+      </div>
+      <div class="plant-body">
+        <div class="method-row">
+          <span class="method-label">酢水さらし</span>
+          <div class="method-content">
+            <div class="method-title">酢水に10〜15分さらす</div>
+            <div class="method-desc">切りながら水1Lに酢大さじ1〜2の酢水にすぐ入れる。変色防止とアク抜きを同時に行う。生食や酢の物に向く。</div>
+            <span class="method-time">10〜15分</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="plant-card" data-name="こごみ">
+      <div class="plant-header" onclick="toggleCard(this)">
+        <span class="plant-emoji">🌿</span>
+        <div>
+          <div class="plant-name">こごみ（クサソテツ）</div>
+          <div class="plant-season">旬：4〜5月</div>
+        </div>
+        <span class="plant-arrow">▼</span>
+      </div>
+      <div class="plant-body">
+        <div class="method-row">
+          <span class="method-label">塩茹で</span>
+          <div class="method-content">
+            <div class="method-title">塩茹ですれば完了（アクが少ない）</div>
+            <div class="method-desc">アクが少なく食べやすい山菜。沸騰した塩水で2〜3分ゆでるだけでOK。ゆですぎると食感がなくなるので注意。</div>
+            <span class="method-time">2〜3分</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="plant-card" data-name="行者にんにく">
+      <div class="plant-header" onclick="toggleCard(this)">
+        <span class="plant-emoji">🧄</span>
+        <div>
+          <div class="plant-name">行者にんにく（ギョウジャニンニク）</div>
+          <div class="plant-season">旬：4〜5月</div>
+        </div>
+        <span class="plant-arrow">▼</span>
+      </div>
+      <div class="plant-body">
+        <div class="method-row">
+          <span class="method-label">塩茹でor生食</span>
+          <div class="method-content">
+            <div class="method-title">アク抜き不要・生食も可</div>
+            <div class="method-desc">アクはほぼなし。生のまま醤油漬け・塩漬けにするか、さっと茹でて使う。強いにおいが特徴で、熱を通すと和らぐ。</div>
+            <span class="method-time">アク抜き不要</span>
+          </div>
+        </div>
+        <div class="warning">
+          <span class="warning-icon">⚠️</span>
+          <span class="warning-text">イヌサフランやスズランと葉の形が似ており、誤食すると危険です。採取には十分注意してください。</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="note-card" style="margin-top:4px;">
+    <div class="note-title">📌 アク抜きの基本注意点</div>
+    <ul class="note-list">
+      <li>採取後はなるべく早くアク抜きを行う（時間が経つとエグ味が強くなる）</li>
+      <li>重曹・灰汁を使う場合は適量を守る（入れすぎると食感が崩れる）</li>
+      <li>アク抜き後は流水でよく洗ってから調理・保存する</li>
+      <li>不確かな植物は採取しない（猛毒草との誤食事故に注意）</li>
+    </ul>
+  </div>
+
+</div>
+<div style="max-width:640px; margin:0 auto; padding:0 16px 8px;">
+  <div class="ad-slot" style="min-height:250px;">広告</div>
+</div>
+<footer>
+  <p>保存食計算ツール | <a href="../privacy.html">プライバシーポリシー</a></p>
+</footer>
+<script>
+  function toggleCard(header) {
+    const body = header.nextElementSibling;
+    const arrow = header.querySelector('.plant-arrow');
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    arrow.classList.toggle('open', !isOpen);
+  }
+  function filterCards(q) {
+    q = q.toLowerCase();
+    document.querySelectorAll('.plant-card').forEach(card => {
+      const name = card.dataset.name || '';
+      card.style.display = name.includes(q) || q === '' ? '' : 'none';
+    });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>山菜カレンダー｜旬の時期・採れる場所・早見表</title>
+  <meta name="description" content="山菜の旬の時期・採れる場所を月別にまとめたカレンダー。わらび・たけのこ・ふき・こごみなどの採取時期が一目でわかります。">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif; background: #f3efe8; color: #2c2c2c; font-size: 16px; line-height: 1.6; }
+    header { background: linear-gradient(160deg, #1e3d0a 0%, #2d5c12 50%, #3d7a1a 100%); color: white; padding: 20px 16px 18px; position: relative; overflow: hidden; }
+    header::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 20% 50%, rgba(120,200,60,0.15) 0%, transparent 60%); }
+    .header-inner { max-width: 640px; margin: 0 auto; position: relative; z-index: 1; }
+    .back-link { display: inline-flex; align-items: center; gap: 4px; color: rgba(255,255,255,0.75); font-size: 0.8rem; text-decoration: none; margin-bottom: 10px; }
+    header h1 { font-size: 1.25rem; font-weight: bold; }
+    header p { font-size: 0.8rem; opacity: 0.78; margin-top: 5px; }
+    .ad-slot { background: #e8e2d8; border: 1px dashed #b8a888; text-align: center; padding: 12px; margin: 0 auto; max-width: 640px; color: #907050; font-size: 0.8rem; min-height: 90px; display: flex; align-items: center; justify-content: center; }
+    .container { max-width: 640px; margin: 0 auto; padding: 20px 16px 48px; }
+    .month-tabs { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 20px; }
+    .month-btn { padding: 8px 10px; background: white; border: 1px solid #d8d0c0; border-radius: 8px; font-size: 0.8rem; color: #666; cursor: pointer; transition: all 0.15s; min-width: 40px; text-align: center; }
+    .month-btn.active { background: linear-gradient(135deg, #2d5c12, #4a8020); color: white; border-color: transparent; }
+    .season-card { background: white; border-radius: 14px; padding: 18px; margin-bottom: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.07); }
+    .season-title { font-size: 1rem; font-weight: bold; color: #1e3d0a; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid #e8e0d0; }
+    .plant-row { display: flex; gap: 10px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid #f0ece4; }
+    .plant-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .plant-emoji { font-size: 1.4rem; width: 32px; flex-shrink: 0; text-align: center; margin-top: 2px; }
+    .plant-info { flex: 1; }
+    .plant-name { font-weight: bold; font-size: 0.9rem; color: #1e3d0a; }
+    .plant-period { display: inline-block; background: #e8f3d8; color: #2d5c12; font-size: 0.72rem; font-weight: bold; padding: 1px 8px; border-radius: 10px; margin: 3px 0; }
+    .plant-where { font-size: 0.78rem; color: #666; line-height: 1.5; margin-top: 3px; }
+    .plant-tip { font-size: 0.76rem; color: #888; font-style: italic; margin-top: 3px; }
+    .all-section { margin-top: 4px; }
+    .cal-table { width: 100%; background: white; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.07); }
+    .cal-table table { width: 100%; border-collapse: collapse; }
+    .cal-table th { background: linear-gradient(135deg, #2d5c12, #4a8020); color: white; font-size: 0.72rem; padding: 8px 4px; text-align: center; font-weight: bold; }
+    .cal-table td { font-size: 0.72rem; padding: 6px 4px; text-align: center; border-bottom: 1px solid #f0ece4; }
+    .cal-table tr:last-child td { border-bottom: none; }
+    .cal-table td:first-child { text-align: left; padding-left: 10px; font-weight: bold; color: #2c2c2c; }
+    .dot { width: 8px; height: 8px; background: linear-gradient(135deg, #4a8020, #7ab640); border-radius: 50%; margin: 0 auto; }
+    .dot.peak { background: linear-gradient(135deg, #1e3d0a, #2d5c12); width: 10px; height: 10px; }
+    .note-card { background: white; border-radius: 14px; padding: 18px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); margin-top: 4px; }
+    .note-title { font-size: 0.9rem; font-weight: bold; color: #1e3d0a; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #e8e0d0; }
+    .note-list { list-style: none; }
+    .note-list li { font-size: 0.83rem; color: #555; line-height: 1.8; padding-left: 1.4em; position: relative; }
+    .note-list li::before { content: '📅'; position: absolute; left: 0; font-size: 0.72rem; top: 0.2em; }
+    footer { background: linear-gradient(135deg, #1e3d0a, #2d5c12); color: #8aba5c; text-align: center; padding: 20px; font-size: 0.75rem; }
+    footer a { color: #8aba5c; text-decoration: none; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a href="../index.html" class="back-link">← 保存食計算ツール TOP</a>
+    <h1>📅 山菜カレンダー</h1>
+    <p>旬の時期・採れる場所を月別に確認</p>
+  </div>
+</header>
+<div class="ad-slot">広告</div>
+<div class="container">
+
+  <div class="month-tabs">
+    <button class="month-btn" onclick="showMonth(3)">3月</button>
+    <button class="month-btn active" onclick="showMonth(4)">4月</button>
+    <button class="month-btn" onclick="showMonth(5)">5月</button>
+    <button class="month-btn" onclick="showMonth(6)">6月</button>
+    <button class="month-btn" onclick="showMonth(7)">7〜8月</button>
+    <button class="month-btn" onclick="showMonth(9)">9〜10月</button>
+    <button class="month-btn" onclick="showMonth(0)">一覧表</button>
+  </div>
+
+  <!-- 月別セクション -->
+  <div class="season-card" id="sec3" style="display:none;">
+    <div class="season-title">🌸 3月の山菜</div>
+    <div class="plant-row"><span class="plant-emoji">🎋</span><div class="plant-info"><div class="plant-name">たけのこ（孟宗竹）</div><span class="plant-period">最旬：3〜4月（西日本中心）</span><div class="plant-where">📍 竹林・里山</div><div class="plant-tip">地面からほんの少し顔を出したものが柔らかい</div></div></div>
+    <div class="plant-row"><span class="plant-emoji">🌱</span><div class="plant-info"><div class="plant-name">つくし（土筆）</div><span class="plant-period">最旬：3〜4月</span><div class="plant-where">📍 田んぼのあぜ道・土手・野原</div><div class="plant-tip">胞子が散る前（頭が閉じているもの）が食べ頃</div></div></div>
+  </div>
+
+  <div class="season-card" id="sec4">
+    <div class="season-title">🌿 4月の山菜（最盛期）</div>
+    <div class="plant-row"><span class="plant-emoji">🌿</span><div class="plant-info"><div class="plant-name">わらび</div><span class="plant-period">最旬：4〜5月</span><div class="plant-where">📍 日当たりのよい斜面・草地・雑木林のふちなど</div><div class="plant-tip">先端の葉が開く前の若い芽を採る</div></div></div>
+    <div class="plant-row"><span class="plant-emoji">🌀</span><div class="plant-info"><div class="plant-name">ぜんまい</div><span class="plant-period">最旬：4〜5月</span><div class="plant-where">📍 湿った斜面・渓流沿い・山のふち</div><div class="plant-tip">渦巻きが解けていないものが若くて柔らかい</div></div></div>
+    <div class="plant-row"><span class="plant-emoji">🌿</span><div class="plant-info"><div class="plant-name">こごみ（クサソテツ）</div><span class="plant-period">最旬：4〜5月</span><div class="plant-where">📍 湿った林の縁・渓流沿い</div><div class="plant-tip">アクが少なく扱いやすい。曲がっているうちが食べ頃</div></div></div>
+    <div class="plant-row"><span class="plant-emoji">🧄</span><div class="plant-info"><div class="plant-name">行者にんにく</div><span class="plant-period">最旬：4〜5月（北海道は少し遅め）</span><div class="plant-where">📍 湿った落葉広葉樹林の下</div><div class="plant-tip">強いにんにく臭が特徴。葉が2〜3枚のうちが柔らかい</div></div></div>
+    <div class="plant-row"><span class="plant-emoji">🍃</span><div class="plant-info"><div class="plant-name">ふき（フキ）</div><span class="plant-period">最旬：4〜6月</span><div class="plant-where">📍 河川敷・湿った日かげ・里山</div><div class="plant-tip">茎の太いもの・折ったときにキレイにきれるものが新鮮</div></div></div>
+  </div>
+
+  <div class="season-card" id="sec5" style="display:none;">
+    <div class="season-title">☘️ 5月の山菜</div>
+    <div class="plant-row"><span class="plant-emoji">🌾</span><div class="plant-info"><div class="plant-name">うど（ウド）</div><span class="plant-period">最旬：4〜5月</span><div class="plant-where">📍 山の斜面・林のふち・やぶの中</div><div class="plant-tip">白くて太い茎が食べ頃。葉も香りがよく天ぷらに向く</div></div></div>
+    <div class="plant-row"><span class="plant-emoji">🎋</span><div class="plant-info"><div class="plant-name">たけのこ（真竹・淡竹）</div><span class="plant-period">最旬：5〜6月</span><div class="plant-where">📍 竹林・里山</div><div class="plant-tip">孟宗竹より細め。地上に出たてのものを採る</div></div></div>
+  </div>
+
+  <div class="season-card" id="sec6" style="display:none;">
+    <div class="season-title">☀️ 6月の山菜</div>
+    <div class="plant-row"><span class="plant-emoji">🍃</span><div class="plant-info"><div class="plant-name">ミズ（ウワバミソウ）</div><span class="plant-period">最旬：6〜8月</span><div class="plant-where">📍 湿った沢沿い・渓流のふち</div><div class="plant-tip">アクが少なく粘りが出る山菜。葉より茎を使う</div></div></div>
+    <div class="plant-row"><span class="plant-emoji">🌿</span><div class="plant-info"><div class="plant-name">ふきのとう（花芽）</div><span class="plant-period">最旬：2〜4月（地域による）</span><div class="plant-where">📍 雪解け後の山麓・日当たりのよい場所</div><div class="plant-tip">花が開く前の固いつぼみが食べ頃。6月はやや遅め</div></div></div>
+  </div>
+
+  <div class="season-card" id="sec7" style="display:none;">
+    <div class="season-title">🏔️ 7〜8月の山菜</div>
+    <div class="plant-row"><span class="plant-emoji">🍃</span><div class="plant-info"><div class="plant-name">ミズ（ウワバミソウ）</div><span class="plant-period">最旬：6〜8月</span><div class="plant-where">📍 湿った沢沿い・渓流のふち</div><div class="plant-tip">夏が旬のめずらしい山菜。粘りと歯ごたえが魅力</div></div></div>
+    <div class="plant-row"><span class="plant-emoji">🌸</span><div class="plant-info"><div class="plant-name">ノビル（野蒜）</div><span class="plant-period">最旬：3〜5月・秋にも</span><div class="plant-where">📍 草地・田んぼのあぜ道・公園など</div><div class="plant-tip">ねぎに似た香り。葉・球根ともに食べられる</div></div></div>
+  </div>
+
+  <div class="season-card" id="sec9" style="display:none;">
+    <div class="season-title">🍂 9〜10月の山菜・きのこ</div>
+    <div class="plant-row"><span class="plant-emoji">🍄</span><div class="plant-info"><div class="plant-name">まつたけ</div><span class="plant-period">最旬：9〜10月</span><div class="plant-where">📍 アカマツ林</div><div class="plant-tip">採取には許可・規制が必要な場合あり。かさが開く前が高品質</div></div></div>
+    <div class="plant-row"><span class="plant-emoji">🍄</span><div class="plant-info"><div class="plant-name">なめこ・しいたけ・ひらたけ</div><span class="plant-period">最旬：9〜11月</span><div class="plant-where">📍 広葉樹の倒木・切り株</div><div class="plant-tip">毒きのことの区別に注意。不確かなものは採らない</div></div></div>
+    <div class="plant-row"><span class="plant-emoji">🌿</span><div class="plant-info"><div class="plant-name">みつば・せり</div><span class="plant-period">最旬：秋・春</span><div class="plant-where">📍 水辺・湿地・里山</div><div class="plant-tip">春と秋に楽しめる。清潔な水場のそばのものを選ぶ</div></div></div>
+  </div>
+
+  <!-- 一覧表 -->
+  <div class="cal-table" id="sec0" style="display:none;">
+    <table>
+      <thead>
+        <tr>
+          <th>山菜名</th>
+          <th>3月</th><th>4月</th><th>5月</th><th>6月</th><th>7月</th><th>8月</th><th>9月</th><th>10月</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>わらび</td><td></td><td><div class="dot peak"></div></td><td><div class="dot peak"></div></td><td><div class="dot"></div></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>ぜんまい</td><td></td><td><div class="dot peak"></div></td><td><div class="dot peak"></div></td><td><div class="dot"></div></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>こごみ</td><td></td><td><div class="dot peak"></div></td><td><div class="dot"></div></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>たけのこ</td><td><div class="dot"></div></td><td><div class="dot peak"></div></td><td><div class="dot peak"></div></td><td><div class="dot"></div></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>ふき</td><td></td><td><div class="dot peak"></div></td><td><div class="dot peak"></div></td><td><div class="dot peak"></div></td><td><div class="dot"></div></td><td></td><td></td><td></td></tr>
+        <tr><td>うど</td><td></td><td><div class="dot peak"></div></td><td><div class="dot peak"></div></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>行者にんにく</td><td></td><td><div class="dot peak"></div></td><td><div class="dot peak"></div></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>ミズ</td><td></td><td></td><td></td><td><div class="dot peak"></div></td><td><div class="dot peak"></div></td><td><div class="dot peak"></div></td><td></td><td></td></tr>
+        <tr><td>まつたけ</td><td></td><td></td><td></td><td></td><td></td><td></td><td><div class="dot peak"></div></td><td><div class="dot peak"></div></td></tr>
+        <tr><td>なめこ</td><td></td><td></td><td></td><td></td><td></td><td></td><td><div class="dot"></div></td><td><div class="dot peak"></div></td></tr>
+      </tbody>
+    </table>
+    <div style="padding: 10px 12px; font-size: 0.72rem; color: #888;">
+      ●濃い：最旬　●薄い：食べられる　※地域・標高・年によって異なります
+    </div>
+  </div>
+
+  <div class="note-card">
+    <div class="note-title">⚠️ 山菜採取のときの注意事項</div>
+    <ul class="note-list">
+      <li>国有林・国立公園では採取禁止の場合があります。事前に確認を</li>
+      <li>毒草（イヌサフラン・トリカブト等）と山菜を間違えないよう注意</li>
+      <li>採りすぎず、次年度のために根・株を傷つけないようにする</li>
+      <li>時期は地域や標高によって2〜4週間前後します</li>
+    </ul>
+  </div>
+
+</div>
+<div style="max-width:640px; margin:0 auto; padding:0 16px 8px;">
+  <div class="ad-slot" style="min-height:250px;">広告</div>
+</div>
+<footer>
+  <p>保存食計算ツール | <a href="../privacy.html">プライバシーポリシー</a></p>
+</footer>
+<script>
+  const secs = [3, 4, 5, 6, 7, 9, 0];
+  function showMonth(m) {
+    secs.forEach(s => document.getElementById('sec' + s).style.display = 'none');
+    document.getElementById('sec' + m).style.display = '';
+    document.querySelectorAll('.month-btn').forEach((btn, i) => {
+      btn.classList.toggle('active', secs[i] === m);
+    });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>保存食計算ツール｜山菜・漬物・干物・燻製の塩と水の量を自動計算</title>
+  <meta name="description" content="山菜の塩漬け・漬物・干物・燻製に必要な塩・水・重石の量をスマホで簡単計算。毎年の保存食作りに。">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+      background: #f3efe8;
+      color: #2c2c2c;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* ヘッダー */
+    header {
+      background: linear-gradient(160deg, #1e3d0a 0%, #2d5c12 50%, #3d7a1a 100%);
+      color: white;
+      padding: 32px 20px 28px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 20% 50%, rgba(120,200,60,0.15) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 20%, rgba(80,160,30,0.1) 0%, transparent 50%);
+    }
+    header > * { position: relative; z-index: 1; }
+    .header-icon { font-size: 3rem; display: block; margin-bottom: 10px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+    header h1 { font-size: 1.5rem; font-weight: bold; letter-spacing: 0.05em; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+    header p { font-size: 0.83rem; opacity: 0.8; margin-top: 7px; letter-spacing: 0.03em; }
+
+    .ad-slot {
+      background: #e8e2d8; border: 1px dashed #b8a888;
+      text-align: center; padding: 12px;
+      margin: 0 auto; max-width: 640px;
+      color: #907050; font-size: 0.8rem; min-height: 90px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .container { max-width: 640px; margin: 0 auto; padding: 20px 16px 48px; }
+
+    /* イントロ */
+    .intro {
+      background: white;
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-bottom: 24px;
+      font-size: 0.88rem;
+      color: #555;
+      line-height: 1.8;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      border-left: 4px solid #4a8020;
+    }
+    .intro strong { color: #2d5c12; }
+
+    /* カテゴリ */
+    .category { margin-bottom: 28px; }
+    .category-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: #1e3d0a;
+      margin-bottom: 14px;
+      padding: 10px 14px;
+      background: linear-gradient(to right, #e8f3d8, #f3efe8);
+      border-left: 5px solid #4a8020;
+      border-radius: 0 8px 8px 0;
+      letter-spacing: 0.03em;
+    }
+
+    /* ツールカード */
+    .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .tool-card {
+      background: white;
+      border-radius: 14px;
+      padding: 16px 14px 14px;
+      text-decoration: none;
+      color: #2c2c2c;
+      display: block;
+      transition: transform 0.18s, box-shadow 0.18s;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+      border: 1px solid rgba(0,0,0,0.05);
+      position: relative;
+      overflow: hidden;
+    }
+    .tool-card::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 60px; height: 60px;
+      background: radial-gradient(circle at top right, rgba(74,128,32,0.07), transparent 70%);
+      border-radius: 0 14px 0 0;
+    }
+    .tool-card:active { transform: scale(0.96); box-shadow: 0 1px 5px rgba(0,0,0,0.1); }
+    @media (hover: hover) {
+      .tool-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.11); }
+    }
+    .tool-card.info { background: linear-gradient(135deg, #fafaf6 0%, #f5f2ea 100%); }
+
+    .tool-emoji {
+      font-size: 1.8rem;
+      display: block;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15));
+    }
+    .tool-name {
+      font-size: 0.88rem;
+      font-weight: bold;
+      color: #1e3d0a;
+      line-height: 1.5;
+    }
+    .tool-desc {
+      font-size: 0.74rem;
+      color: #888;
+      margin-top: 4px;
+      line-height: 1.5;
+    }
+    .tool-badge {
+      display: inline-block;
+      font-size: 0.63rem;
+      font-weight: bold;
+      letter-spacing: 0.04em;
+      background: linear-gradient(135deg, #2d5c12, #4a8020);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-top: 6px;
+    }
+    .tool-badge.info {
+      background: linear-gradient(135deg, #7a5a14, #a07820);
+    }
+
+    /* 使い方 */
+    .howto {
+      background: white;
+      border-radius: 14px;
+      padding: 18px;
+      margin-top: 4px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+    .howto h2 {
+      font-size: 0.95rem;
+      color: #1e3d0a;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #e8e0d0;
+    }
+    .howto li {
+      font-size: 0.83rem;
+      color: #555;
+      line-height: 1.9;
+      margin-left: 1.2em;
+      padding-left: 0.2em;
+    }
+    .howto li + li { margin-top: 2px; }
+
+    footer {
+      background: linear-gradient(135deg, #1e3d0a, #2d5c12);
+      color: #8aba5c;
+      text-align: center;
+      padding: 24px 20px;
+      font-size: 0.75rem;
+      margin-top: 40px;
+    }
+    footer a { color: #8aba5c; text-decoration: none; }
+    footer p + p { margin-top: 5px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="header-icon">🍃</span>
+  <h1>保存食計算ツール</h1>
+  <p>山菜・漬物・干物・燻製の塩と水の量を自動計算</p>
+</header>
+
+<div class="ad-slot"><!-- AdSense -->広告</div>
+
+<div class="container">
+
+  <div class="intro">
+    山菜の塩漬け・白菜漬け・干物・燻製に必要な<strong>塩の量・水の量・重石の重さ</strong>を計算できます。重さを入力するだけで答えが出ます。毎年の保存食作りにご活用ください。
+  </div>
+
+  <!-- 山菜・きのこ -->
+  <div class="category">
+    <div class="category-title">🌿 山菜・きのこ</div>
+    <div class="tool-grid">
+      <a href="yamana/shiozuke.html" class="tool-card">
+        <span class="tool-emoji">🧂</span>
+        <div class="tool-name">塩漬け・塩蔵<br>塩の量計算</div>
+        <div class="tool-desc">わらび・たけのこ・きのこ等</div>
+        <span class="tool-badge">計算ツール</span>
+      </a>
+      <a href="yamana/akunuki.html" class="tool-card info">
+        <span class="tool-emoji">♨️</span>
+        <div class="tool-name">アク抜き方法<br>早見表</div>
+        <div class="tool-desc">種類別・時間・注意点</div>
+        <span class="tool-badge info">早見表</span>
+      </a>
+      <a href="yamana/calendar.html" class="tool-card info">
+        <span class="tool-emoji">📅</span>
+        <div class="tool-name">山菜カレンダー</div>
+        <div class="tool-desc">旬の時期・採れる場所</div>
+        <span class="tool-badge info">早見表</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- 漬物 -->
+  <div class="category">
+    <div class="category-title">🥬 漬物</div>
+    <div class="tool-grid">
+      <a href="tsukemono/hakusai.html" class="tool-card">
+        <span class="tool-emoji">🥬</span>
+        <div class="tool-name">白菜漬け<br>塩の量計算</div>
+        <div class="tool-desc">浅漬け・本漬け対応</div>
+        <span class="tool-badge">計算ツール</span>
+      </a>
+      <a href="tsukemono/daikon.html" class="tool-card">
+        <span class="tool-emoji">🥕</span>
+        <div class="tool-name">大根・たくあん<br>塩の量計算</div>
+        <div class="tool-desc">ぬか漬け・たくあん対応</div>
+        <span class="tool-badge">計算ツール</span>
+      </a>
+      <a href="tsukemono/omoshi.html" class="tool-card">
+        <span class="tool-emoji">⚖️</span>
+        <div class="tool-name">重石の重さ<br>計算</div>
+        <div class="tool-desc">野菜の重さから重石を計算</div>
+        <span class="tool-badge">計算ツール</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- 干物 -->
+  <div class="category">
+    <div class="category-title">🐟 干物</div>
+    <div class="tool-grid">
+      <a href="himono/tateShio.html" class="tool-card">
+        <span class="tool-emoji">🧂</span>
+        <div class="tool-name">立て塩<br>塩水計算</div>
+        <div class="tool-desc">魚の種類別・塩分濃度計算</div>
+        <span class="tool-badge">計算ツール</span>
+      </a>
+      <a href="himono/hoshi.html" class="tool-card info">
+        <span class="tool-emoji">☀️</span>
+        <div class="tool-name">乾燥時間<br>早見表</div>
+        <div class="tool-desc">魚種・季節別の目安</div>
+        <span class="tool-badge info">早見表</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- 燻製 -->
+  <div class="category">
+    <div class="category-title">🔥 燻製</div>
+    <div class="tool-grid">
+      <a href="kunsei/saumure.html" class="tool-card">
+        <span class="tool-emoji">🧪</span>
+        <div class="tool-name">ソミュール液<br>計算</div>
+        <div class="tool-desc">塩水・砂糖・水の量を計算</div>
+        <span class="tool-badge">計算ツール</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="howto">
+    <h2>📖 このサイトについて</h2>
+    <ul>
+      <li>山菜採り・漬物作り・干物作りに必要な計算をまとめました</li>
+      <li>重さを入力するだけで塩・水・重石の量が自動で出ます</li>
+      <li>計算結果はあくまで目安です。保存環境や好みに合わせて調整してください</li>
+      <li>毎年の保存食作りのお供にブックマーク登録がおすすめです</li>
+    </ul>
+  </div>
+
+</div>
+
+<div style="max-width:640px; margin:0 auto; padding:0 16px;">
+  <div class="ad-slot" style="min-height:250px;"><!-- AdSense -->広告</div>
+</div>
+
+<footer>
+  <p>保存食計算ツール | 山菜・漬物・干物・燻製の計算</p>
+  <p>© 2026 保存食計算ツール | <a href="privacy.html">プライバシーポリシー</a></p>
+</footer>
+
+</body>
+</html>

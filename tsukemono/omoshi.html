@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>重石の重さ計算｜漬物・塩漬けに必要な重石の量</title>
+  <meta name="description" content="漬物・山菜塩漬けに必要な重石の重さを自動計算。野菜の重さを入力するだけで初期重石・水上がり後の重石の目安が出ます。">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif; background: #f3efe8; color: #2c2c2c; font-size: 16px; line-height: 1.6; }
+    header { background: linear-gradient(160deg, #1e3d0a 0%, #2d5c12 50%, #3d7a1a 100%); color: white; padding: 20px 16px 18px; position: relative; overflow: hidden; }
+    header::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 20% 50%, rgba(120,200,60,0.15) 0%, transparent 60%); }
+    .header-inner { max-width: 640px; margin: 0 auto; position: relative; z-index: 1; }
+    .back-link { display: inline-flex; align-items: center; gap: 4px; color: rgba(255,255,255,0.75); font-size: 0.8rem; text-decoration: none; margin-bottom: 10px; }
+    header h1 { font-size: 1.25rem; font-weight: bold; }
+    header p { font-size: 0.8rem; opacity: 0.78; margin-top: 5px; }
+    .ad-slot { background: #e8e2d8; border: 1px dashed #b8a888; text-align: center; padding: 12px; margin: 0 auto; max-width: 640px; color: #907050; font-size: 0.8rem; min-height: 90px; display: flex; align-items: center; justify-content: center; }
+    .container { max-width: 640px; margin: 0 auto; padding: 20px 16px 48px; }
+    .card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+    .card-title { font-size: 0.88rem; font-weight: bold; color: #1e3d0a; margin-bottom: 14px; }
+    .input-label { font-size: 0.82rem; color: #666; margin-bottom: 6px; display: block; }
+    .input-row { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+    .input-field { flex: 1; height: 52px; border: 2px solid #e0d8c8; border-radius: 12px; padding: 0 16px; font-size: 1.2rem; font-weight: bold; background: #fafaf7; outline: none; transition: border-color 0.2s; -webkit-appearance: none; }
+    .input-field:focus { border-color: #4a8020; background: white; }
+    .input-unit { font-size: 0.9rem; color: #666; }
+    .preset-label { font-size: 0.78rem; color: #888; margin-bottom: 7px; }
+    .preset-row { display: flex; gap: 7px; flex-wrap: wrap; }
+    .preset-btn { padding: 7px 14px; background: #f0ece4; border: 1px solid #d8d0c0; border-radius: 20px; font-size: 0.82rem; color: #555; cursor: pointer; }
+    .preset-btn.selected { background: linear-gradient(135deg, #2d5c12, #4a8020); color: white; border-color: transparent; }
+    .category-select { width: 100%; padding: 12px 16px; border: 2px solid #e0d8c8; border-radius: 12px; font-size: 0.9rem; background: #fafaf7; outline: none; margin-bottom: 4px; appearance: none; -webkit-appearance: none; cursor: pointer; }
+    .category-select:focus { border-color: #4a8020; }
+    .calc-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #2d5c12, #4a8020); color: white; border: none; border-radius: 14px; font-size: 1rem; font-weight: bold; cursor: pointer; box-shadow: 0 4px 14px rgba(45,92,18,0.3); transition: transform 0.15s; }
+    .calc-btn:active { transform: scale(0.97); }
+    .result-card { background: linear-gradient(135deg, #f0f7e8, #e8f3d8); border: 2px solid #b8d890; border-radius: 16px; padding: 22px 20px; margin-top: 16px; display: none; }
+    .result-card.show { display: block; }
+    .result-title { font-size: 0.85rem; color: #2d5c12; font-weight: bold; margin-bottom: 20px; }
+    .omoshi-step { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .step-badge { background: linear-gradient(135deg, #2d5c12, #4a8020); color: white; font-size: 0.72rem; font-weight: bold; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
+    .step-content { flex: 1; }
+    .step-num { font-size: 2rem; font-weight: bold; color: #1e3d0a; line-height: 1; }
+    .step-unit { font-size: 0.9rem; color: #4a8020; font-weight: bold; }
+    .step-desc { font-size: 0.78rem; color: #5a7a30; margin-top: 2px; }
+    .step-divider { text-align: center; color: #4a8020; font-size: 1.2rem; margin: 4px 0 16px; }
+    .result-row { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid rgba(100,150,50,0.2); font-size: 0.85rem; }
+    .result-row:last-child { border-bottom: none; }
+    .result-row-label { color: #555; }
+    .result-row-val { font-weight: bold; color: #2d5c12; }
+    .info-card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .info-title { font-size: 0.9rem; font-weight: bold; color: #1e3d0a; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid #e8e0d0; }
+    .info-item { margin-bottom: 14px; }
+    .info-q { font-size: 0.83rem; font-weight: bold; color: #2d5c12; margin-bottom: 4px; }
+    .info-a { font-size: 0.82rem; color: #555; line-height: 1.7; }
+    .tip-list { list-style: none; margin-top: 14px; }
+    .tip-list li { font-size: 0.83rem; color: #555; line-height: 1.8; padding-left: 1.4em; position: relative; }
+    .tip-list li::before { content: '⚖️'; position: absolute; left: 0; font-size: 0.72rem; top: 0.2em; }
+    footer { background: linear-gradient(135deg, #1e3d0a, #2d5c12); color: #8aba5c; text-align: center; padding: 20px; font-size: 0.75rem; }
+    footer a { color: #8aba5c; text-decoration: none; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a href="../index.html" class="back-link">← 保存食計算ツール TOP</a>
+    <h1>⚖️ 重石の重さ計算</h1>
+    <p>漬物・塩漬けに必要な重石の量を計算</p>
+  </div>
+</header>
+<div class="ad-slot">広告</div>
+<div class="container">
+  <div class="card">
+    <div class="card-title">🥬 野菜・食材の種類</div>
+    <label class="input-label">食材を選んでください</label>
+    <select class="category-select" id="category" onchange="updateHint()">
+      <option value="2.0,1.0">白菜漬け</option>
+      <option value="2.0,1.0">大根漬け・たくあん</option>
+      <option value="2.0,1.0">山菜・きのこ塩漬け</option>
+      <option value="1.5,0.8">きゅうり・なす漬け</option>
+      <option value="1.5,1.0">梅漬け・梅干し</option>
+    </select>
+    <div id="categoryHint" style="font-size:0.78rem; color:#888; margin-top:6px;"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚖️ 食材の重さを入力</div>
+    <label class="input-label">漬ける食材の重さ</label>
+    <div class="input-row">
+      <input type="number" class="input-field" id="weight" placeholder="例：2000" inputmode="numeric">
+      <span class="input-unit">g</span>
+    </div>
+    <div class="preset-label">よく使う量</div>
+    <div class="preset-row">
+      <button class="preset-btn" onclick="setWeight(1000)">1kg</button>
+      <button class="preset-btn" onclick="setWeight(2000)">2kg</button>
+      <button class="preset-btn" onclick="setWeight(3000)">3kg</button>
+      <button class="preset-btn" onclick="setWeight(5000)">5kg</button>
+      <button class="preset-btn" onclick="setWeight(10000)">10kg</button>
+    </div>
+  </div>
+
+  <button class="calc-btn" onclick="calculate()">計算する</button>
+
+  <div class="result-card" id="result">
+    <div class="result-title">✅ 重石の目安</div>
+    <div class="omoshi-step">
+      <span class="step-badge">最初</span>
+      <div class="step-content">
+        <span class="step-num" id="omoshi1">—</span>
+        <span class="step-unit">g</span>
+        <div class="step-desc">漬け始めから水が上がるまで（1〜2日）</div>
+      </div>
+    </div>
+    <div class="step-divider">↓ 水が上がったら軽くする</div>
+    <div class="omoshi-step">
+      <span class="step-badge">水上がり後</span>
+      <div class="step-content">
+        <span class="step-num" id="omoshi2">—</span>
+        <span class="step-unit">g</span>
+        <div class="step-desc">水が上がった後はこの重さに調整</div>
+      </div>
+    </div>
+    <div>
+      <div class="result-row"><span class="result-row-label">食材の重さ</span><span class="result-row-val" id="r-weight">—</span></div>
+    </div>
+  </div>
+
+  <div class="info-card" style="margin-top:16px;">
+    <div class="info-title">📖 重石のポイント</div>
+    <div class="info-item">
+      <div class="info-q">Q. 重石が重すぎるとどうなる？</div>
+      <div class="info-a">食材が潰れたり、塩水が外に溢れ出したりします。水が上がったら早めに重石を軽くしましょう。</div>
+    </div>
+    <div class="info-item">
+      <div class="info-q">Q. 重石の代わりになるものは？</div>
+      <div class="info-a">水を入れたジッパー袋・砂利袋・平たい石など。ただし食品に直接触れる場合は衛生面に注意してください。</div>
+    </div>
+    <ul class="tip-list">
+      <li>「水が上がる」＝塩水が食材の表面を覆う状態</li>
+      <li>蓋の上に重石を置くか、食材を直接押さえる</li>
+      <li>重石と食材の間に塩を一層かぶせると腐敗防止に</li>
+      <li>水が上がるまでは常温、その後は冷暗所が基本</li>
+    </ul>
+  </div>
+</div>
+<div style="max-width:640px; margin:0 auto; padding:0 16px 8px;">
+  <div class="ad-slot" style="min-height:250px;">広告</div>
+</div>
+<footer>
+  <p>保存食計算ツール | <a href="../privacy.html">プライバシーポリシー</a></p>
+</footer>
+<script>
+  function updateHint() {
+    const hints = {
+      '2.0,1.0': '白菜漬けは最初に2倍の重石をかけて水を早く引き出します。',
+      '1.5,0.8': 'きゅうり・なすは柔らかいので少し軽めの重石が向いています。',
+      '1.5,1.0': '梅は傷つきやすいので優しく押さえます。'
+    };
+  }
+  function setWeight(g) {
+    document.getElementById('weight').value = g;
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('selected'));
+    event.target.classList.add('selected');
+  }
+  function calculate() {
+    const w = parseFloat(document.getElementById('weight').value);
+    if (!w || w <= 0) { alert('重さを入力してください'); return; }
+    const catVal = document.getElementById('category').value;
+    const [r1, r2] = catVal.split(',').map(Number);
+    const o1 = Math.round(w * r1);
+    const o2 = Math.round(w * r2);
+    document.getElementById('omoshi1').textContent = o1.toLocaleString();
+    document.getElementById('omoshi2').textContent = o2.toLocaleString();
+    document.getElementById('r-weight').textContent = w.toLocaleString() + ' g';
+    const rc = document.getElementById('result');
+    rc.classList.add('show');
+    rc.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  document.getElementById('weight').addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); });
+</script>
+</body>
+</html>
